@@ -10,7 +10,6 @@ const data1 = reactive({            //从后端发送过来的日期表，服务
     departments: []
 });
 
-
 const activeButton = ref(null);
 const setButtonActive = (index) => {
     activeButton.value = index;
@@ -106,6 +105,9 @@ function clickRegister(doctor_id ,date) {
     axios({
         url: 'http://localhost:8080/patient/registration/submit',
         method: 'post',
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
         params: {
             date : date,
             doctor_id : doctor_id
@@ -130,6 +132,7 @@ onMounted(async () => {
     data1.now = response.data.now;
     data1.departments = response.data.departments;
 });
+
 </script>
 
 <template>

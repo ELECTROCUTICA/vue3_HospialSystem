@@ -49,7 +49,6 @@ onMounted(async () => {
         next = '<li class="page-item"><a class="page-link" href="record?p=' + (requestParam_p + 1) + '" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>';
     }
     $('#page_navbtn').append(next);
-
 });
 
 function cancelRegistration(id, date, dep_name, doctor_name) {
@@ -57,6 +56,9 @@ function cancelRegistration(id, date, dep_name, doctor_name) {
         axios({
             url: 'http://localhost:8080/patient/interface/cancelRegistration',
             method: 'post',
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
             data: {
                 id: id,
                 status: 0,

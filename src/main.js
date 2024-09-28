@@ -9,11 +9,12 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import router from './router'
 import patientHeader from './components/patientHeader.vue'
 import patientNav from './components/patientNav.vue'
+import adminNav from './components/adminNav.vue'
 
 const app = createApp(App);
 app.component('patientHeader', patientHeader);
 app.component('patientNav', patientNav);
-
+app.component('adminNav', adminNav);
 
 
 app.use(router).mount('#app')
