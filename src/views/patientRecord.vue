@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useRoute } from 'vue-router';
 import $ from 'jquery';
 
+
 let requestParam_p = Number(useRoute().query.p);
 if (requestParam_p === undefined || isNaN(requestParam_p)) {
     requestParam_p = 1;
@@ -60,12 +61,13 @@ function cancelRegistration(id, date, dep_name, doctor_name) {
                 "Content-Type": "application/x-www-form-urlencoded"
             },
             data: {
-                id: id,
-                status: 0,
+                id: id
             },
-        }).then(() => {
-            alert('取消成功');
-            window.location.reload();
+        }).then(response => {
+            alert (response.data.message);
+            if (response.data.state === 'ok') {
+                window.location.reload();
+            }
         }).catch(error => {
             console.log(error);
         });

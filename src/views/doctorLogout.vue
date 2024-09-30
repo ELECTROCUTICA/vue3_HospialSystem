@@ -4,17 +4,15 @@ import axios from 'axios';
 
 onMounted(async () => {
     await axios({
-        url: 'http://localhost:8080/patient/interface/logout',
+        url: 'http://localhost:8080/doctor/interface/logout',
         method: 'get'
     }).then(response => {
         alert(response.data.message);
-        localStorage.removeItem("jwt_patient");
-        window.location.href = '/patient/login'
+        window.location.href = '/doctor/login'
     }).catch(error => {
         console.log(error);
     });
 });
-
 </script>
 
 <template>

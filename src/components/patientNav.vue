@@ -1,10 +1,19 @@
 <script setup>
+import axios from "axios"
 
 function confirmLogout() {
     if (confirm('您确定要退出系统吗？')) {
         window.location.href = '/patient/logout';
     }
 }
+
+axios.interceptors.request.use(
+    (config) => {
+        const token = localStorage.getItem('jwt_patient');
+        config.headers['Authorization'] = `${token}`;
+        return config;
+    },
+);
 
 </script>
 

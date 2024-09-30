@@ -23,6 +23,8 @@ const loginSubmit = async () => {
             password: formData.password
         }
     }).then(response => {
+        localStorage.setItem("jwt_patient", response.data.patient_token);
+
         alert(response.data.message);
         if (response.data.state === 'ok') {
             window.location.href = 'http://localhost:8081/patient/home';

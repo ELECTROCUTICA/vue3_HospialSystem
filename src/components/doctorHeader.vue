@@ -2,63 +2,53 @@
 import { reactive, onMounted } from "vue"
 import axios from "axios"
 
-const patient = reactive({
+const doctor = reactive({
     id: '',
     name: '',
-    sex: '',
-    age: ''
+    dep_no: '',
+    dep_name: '',
+    title: ''
 });
-
-axios.interceptors.request.use(
-    (config) => {
-        const token = localStorage.getItem('jwt_patient');
-        config.headers['Authorization'] = `${token}`;
-        return config;
-    },
-);
-
 
 onMounted(async () => {
     await axios({
-        url: 'http://localhost:8080/patient/interface/getPatient',
+        url: 'http://localhost:8080/doctor/interface/getDoctor',
         method: 'get'
     }).then(response => {
-        patient.id = response.data.id;
-        patient.name = response.data.name;
-        patient.sex = response.data.sex;
-        patient.age = response.data.age;
+        doctor.id = response.data.id;
+        doctor.name = response.data.name;
+        doctor.dep_no = response.data.dep_no;
+        doctor.dep_name = response.data.dep_name;
+        doctor.title = response.data.title;
     }).catch(error => {
         console.log(error);
     });
 });
 
-
 </script>
 
 <template>
-    <div id="patientHeader">
+    <div id="doctorHeader">
         <div class="card" id="frame">
             <div class="card-body">
                 <div class="row mb-1">
                     <div class="col-4 mt-1">
-                        <h3 class="card-title text-white" v-text="patient.name"></h3>
+                        <h3 class="card-title text-white" >{{doctor.name}}</h3>
                     </div>
                     <div class="col-8 mt-1">
-                        <p> {{patient.sex}}  {{patient.age}}岁</p>
+                        <p>{{doctor.dep_name}} {{doctor.title}}</p>
                     </div>
                 </div>
-                <p>身份证号码：{{patient.id}}</p>
+                <p class="card-text mt2">职工号：{{doctor.id}}</p>
             </div>
         </div>
+
     </div>
 </template>
 
-
-
 <style scoped>
-
     #frame {
-        background-color: #13c08b;
+        background-color: #10adc2;
         opacity: 87%;
         width: 350px;
         margin: 5px;

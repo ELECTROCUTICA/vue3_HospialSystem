@@ -2,6 +2,7 @@
 import { reactive, onMounted } from 'vue';
 import axios from 'axios';
 
+
 const data1 = reactive({
     Time: '',
     dateParam: ''
@@ -10,7 +11,6 @@ const data1 = reactive({
 const regs = reactive({
     registrations: []
 });
-
 
 onMounted(async () => {
     const responseTime = await axios({
@@ -55,11 +55,18 @@ onMounted(async () => {
                 </div>
 
                 <div class="row mt-3">
-                    <ul class="list-group">
-                        <li v-for="(value, message) in regs.registrations" :key="message" class="list-group-item list-group-item-action">
-                            <span>{{message}}</span>
-                        </li>
-                    </ul>
+                    <div v-if="regs.registrations.length === 0">
+                        <ul class="list-group">
+                            <li v-for="(value, message) in regs.registrations" :key="message" class="list-group-item list-group-item-action">
+                                <span>{{message}}</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div v-else>
+                        <ul class="list-group">
+                            <li class="list-group-item list-group-item-action">您今日没有预约就诊</li>
+                        </ul>
+                    </div>
                 </div>
 
             </div>

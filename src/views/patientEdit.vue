@@ -2,11 +2,13 @@
 import { reactive, onMounted } from 'vue';
 import axios from 'axios';
 
-const patient = reactive({
+
+const formData = reactive({
     id: '',
     name: '',
     sex: '',
-    birthdate: ''
+    birthdate: '',
+    password: ''
 });
 
 onMounted(async () => {
@@ -14,14 +16,41 @@ onMounted(async () => {
         url: 'http://localhost:8080/patient/interface/getPatient',
         method: 'get'
     }).then(response => {
-        patient.id = response.data.id;
-        patient.name = response.data.name;
-        patient.sex = response.data.sex;
-        patient.birthdate = response.data.birthdate;
+        formData.id = response.data.id;
+        formData.name = response.data.name;
+        formData.sex = response.data.sex;
+        formData.birthdate = response.data.birthdate;
     }).catch(error => {
         console.log(error);
     });
 });
+
+function submitEdit() {
+    axios({
+        url: 'http://localhost:8080/patient/edit/editHandle',
+        method: 'post',
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        data: {
+            id: formData.id,
+            name: formData.name,
+            sex: formData.sex,
+            birthdate: formData.birthdate,
+            password: formData.password,
+        }
+    }).then(response => {
+
+        alert(response.data.message);
+        if (response.data.state === 'ok') {
+            localStorage.removeItem("jwt_patient");
+            window.location.href = "/patient/login";
+        }
+    }).catch(error => {
+        console.log(error);
+    });
+
+}
 
 </script>
 
@@ -39,37 +68,36 @@ onMounted(async () => {
             <div class="col-1 border-start"></div>
 
             <div class="col-7" id="content">
-                <form id="editForm" style="text-align: center">
+                <form @submit.prevent="submitEdit" id="editForm" style="text-align: center">
                     <div class="input-group mb-3 justify-content-center">
                         <h4>修改个人信息</h4>
                     </div>
-
                     <div class="input-group mb-3">
                         <span class="input-group-text">身份证号码</span>
-                        <input type="text" disabled class="form-control" name="id" id="id" v-model="patient.id"/>
+                        <input type="text" disabled class="form-control" name="id" id="id" v-model="formData.id"/>
                     </div>
 
                     <div class="input-group mb-3">
                         <span class="input-group-text">姓名</span>
-                        <input type="text" class="form-control" name="name" id="name" v-model="patient.name"/>
+                        <input type="text" class="form-control" name="name" id="name" v-model="formData.name"/>
                     </div>
 
 
                     <div class="input-group mb-3">
                         <span class="input-group-text">性别</span>
-                        <select id="sex" name="sex" class="form-select form-control" v-model="patient.sex">
+                        <select id="sex" name="sex" class="form-select form-control" v-model="formData.sex">
                             <option value="男">男</option>
                             <option value="女">女</option>
                         </select>
                     </div>
                     <div class="input-group mb-3">
                         <span class="input-group-text">出生日期</span>
-                        <input type="date" class="form-control" name="birthdate" id="birthdate" placeholder="出生日期" v-model="patient.birthdate"/>
+                        <input type="date" class="form-control" name="birthdate" id="birthdate" placeholder="出生日期" v-model="formData.birthdate"/>
                     </div>
 
                     <div class="input-group mb-3">
                         <span class="input-group-text">登录密码</span>
-                        <input type="password" class="form-control" name="password" id="password" placeholder="修改登录密码"/>
+                        <input type="password" class="form-control" name="password" id="password" placeholder="修改登录密码" v-model="formData.password"/>
                     </div>
 
 

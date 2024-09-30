@@ -6,6 +6,11 @@ const admin = reactive({
     id: ''
 });
 
+function confirmLogout() {
+    if (confirm('您确定要退出系统吗？')) {
+        window.location.href = '/admin/logout';
+    }
+}
 
 onMounted(async () => {
     await axios({
@@ -35,21 +40,21 @@ onMounted(async () => {
                     </li>
 
                     <li class="nav-item active">
-                        <a class="nav-link" href="/admin/doctorinfo" style="color: white">管理医生信息<span class="sr-only"></span></a>
+                        <a class="nav-link" href="/admin/doctorinfo" style="color: white">医生信息管理<span class="sr-only"></span></a>
                     </li>
 
                     <li class="nav-item active">
-                        <a class="nav-link" href="/admin/patientManager" style="color: white">管理用户信息<span class="sr-only"></span></a>
+                        <a class="nav-link" href="/admin/patientManager" style="color: white">用户信息管理<span class="sr-only"></span></a>
                     </li>
 
                     <li class="nav-item active">
-                        <a class="nav-link" href="/admin/department" style="color: white">管理科室部门<span class="sr-only"></span></a>
+                        <a class="nav-link" href="/admin/department" style="color: white">科室部门管理<span class="sr-only"></span></a>
                     </li>
 
                 </ul>
             </div>
             <span style="padding-right: 1%; color: white" >管理员：{{admin.id}}</span>
-            <button class="btn btn-danger btn-block" id="logout" onclick="window.location.href='/admin/logout'">登出</button>
+            <button @click="confirmLogout" class="btn btn-danger btn-block" id="logout">登出</button>
         </nav>
     </div>
 </template>

@@ -26,6 +26,20 @@
 
         </div>
 
+        <div class="row mt-ex mb-5">
+
+            <div class="col d-flex p-0">
+            </div>
+
+            <div class="col-3 d-flex p-0">
+                <button class="btn btn-xl btn-outline-primary btn-block"><a href="/admin/patientManager" class="list-group-item list-group-item-action"><i class="bi bi-person-gear"></i>  用户信息管理</a></button>
+            </div>
+
+            <div class="col d-flex p-0">
+            </div>
+
+        </div>
+
     </div>
 
 </template>
