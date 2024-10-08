@@ -15,6 +15,7 @@ const regs = reactive({
 onMounted(async () => {
     const responseTime = await axios({
         url: 'http://localhost:8080/patient/interface/getServerTime',
+        // url: 'http://localhost:5000/patient/api/getServerTime',
         method: 'get'
     });
     data1.Time = responseTime.data.Time;
@@ -22,14 +23,16 @@ onMounted(async () => {
 
     const responseRegistrations = await axios({
         url: 'http://localhost:8080/patient/interface/getRegistrationsToday',
+        // url: 'http://localhost:5000/patient/api/getRegistrationsToday',
         method: 'get',
         params: {
             dateParam: data1.dateParam
         }
     });
     regs.registrations = responseRegistrations.data;
-
 });
+
+
 </script>
 
 <template>
@@ -55,18 +58,11 @@ onMounted(async () => {
                 </div>
 
                 <div class="row mt-3">
-                    <div v-if="regs.registrations.length === 0">
-                        <ul class="list-group">
-                            <li v-for="(value, message) in regs.registrations" :key="message" class="list-group-item list-group-item-action">
-                                <span>{{message}}</span>
-                            </li>
-                        </ul>
-                    </div>
-                    <div v-else>
-                        <ul class="list-group">
-                            <li class="list-group-item list-group-item-action">您今日没有预约就诊</li>
-                        </ul>
-                    </div>
+                    <ul class="list-group">
+                        <li v-for="(value, message) in regs.registrations" :key="message" class="list-group-item list-group-item-action">
+                            <span>{{message}}</span>
+                        </li>
+                    </ul>
                 </div>
 
             </div>

@@ -9,9 +9,22 @@ const formData = reactive({
 
 onMounted(async () => {
     document.querySelector("body").setAttribute("style", "background-color: #20c997");
+
+    await axios({
+        url: 'http://localhost:5000/patient/api/hello',
+        method: 'get',
+        params: {
+            user: "991234"
+        },
+    }).then(response => {
+        console.log(response.data);
+    }).catch(error => {
+        console.log(error);
+    });
 });
 
 const loginSubmit = async () => {
+    //  java springboot
     await axios({
         url: 'http://localhost:8080/patient/login/loginHandle',
         method: 'post',
@@ -32,6 +45,28 @@ const loginSubmit = async () => {
     }).catch(error => {
         console.log(error);
     });
+
+    //  C# webapi
+    // await axios({
+    //     url: 'http://localhost:5000/patient/api/loginHandle',
+    //     method: 'post',
+    //     headers: {
+    //         "Content-Type": "application/x-www-form-urlencoded"
+    //     },
+    //     data: {
+    //         id: formData.id,
+    //         password: formData.password
+    //     }
+    // }).then(response => {
+    //     localStorage.setItem("jwt_patient", response.data.cs_token);
+    //
+    //     alert(response.data.message);
+    //     if (response.data.state === 'ok') {
+    //         window.location.href = '/patient/home';
+    //     }
+    // }).catch(error => {
+    //     console.log(error);
+    // });
 }
 </script>
 

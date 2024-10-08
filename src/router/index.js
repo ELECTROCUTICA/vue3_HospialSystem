@@ -22,6 +22,7 @@ import doctorNav from "@/components/doctorNav.vue";
 import doctorPatientsList from "@/views/doctorPatientsList.vue";
 import doctorLogin from "@/views/doctorLogin.vue";
 import doctorLogout from "@/views/doctorLogout.vue";
+import PatientAIAdvice from "@/views/patientAIAdvice.vue";
 
 const routes = [
   {
@@ -66,6 +67,15 @@ const routes = [
       requiresAuth: true
     },
     component: PatientHome
+  },
+  {
+    path: '/patient/ai',
+    name: 'AIAdvice',
+    meta: {
+      title: '挂号预约-AI智能导诊',
+      requiresAuth: true
+    },
+    component: PatientAIAdvice
   },
   {
     path: '/patient/registration',

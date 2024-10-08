@@ -30,6 +30,19 @@ onMounted(async () => {
     }).catch(error => {
         console.log(error);
     });
+
+
+    // await axios({
+    //     url: 'http://localhost:5000/patient/api/getPatient',
+    //     method: 'get'
+    // }).then(response => {
+    //     patient.id = response.data.id;
+    //     patient.name = response.data.name;
+    //     patient.sex = response.data.sex;
+    //     patient.age = response.data.age;
+    // }).catch(error => {
+    //     console.log(error);
+    // });
 });
 
 

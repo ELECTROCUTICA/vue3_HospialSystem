@@ -142,8 +142,8 @@ function submitUpdate() {
             title: updateModalInfo.title,
             description: updateModalInfo.description
         }
-    }).then(() => {
-        alert('修改完成');
+    }).then(response => {
+        alert(response.data.message);
         const modal = new Modal($('#updateDoctorModal'));
         modal.hide();
         window.location.reload();
