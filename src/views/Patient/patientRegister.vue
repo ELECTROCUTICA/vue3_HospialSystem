@@ -1,13 +1,15 @@
 <script setup>
 import { reactive, onMounted } from "vue"
 import axios from 'axios'
+import config from "@/config/config";
 
 const formData = reactive({
-    id: '',
-    name: '',
-    sex: '',
-    birthdate: '',
-    password: '',
+    patient_id: '',
+    patient_name: '',
+    patient_sex: '',
+    patient_birthdate: '',
+    patient_phone: '',
+    patient_password: '',
 });
 
 onMounted(async () => {
@@ -16,21 +18,22 @@ onMounted(async () => {
 
 const handleSubmit = async () => {
     await axios({
-        url: 'http://localhost:8080/patient/register/registerHandle',
+        url: `${config.spring_cloud_gateway_url}app/patient/register/registerHandle`,
         method: 'post',
         headers: {
             "Content-Type": "application/x-www-form-urlencoded"
         },
         data: {
-            id: formData.id,
-            name: formData.name,
-            sex: formData.sex,
-            birthdate: formData.birthdate,
-            password: formData.password
+            patient_id: formData.patient_id,
+            patient_name: formData.patient_name,
+            patient_sex: formData.patient_sex,
+            patient_birthdate: formData.patient_birthdate,
+            patient_phone: formData.patient_phone,
+            patient_password: formData.patient_password
         }
     }).then(response => {
         alert(response.data.message);
-        if (response.data.state === 'ok') {
+        if (response.data.status === 'ok') {
             window.location.href = '/patient/login';
         }
     }).catch(error => {
@@ -46,24 +49,24 @@ const handleSubmit = async () => {
         <div id="frame">
             <div style="width: 80%; margin: 0 auto">
 
-                <h3 class="text-center mb-4">预约挂号系统病人注册</h3>
+                <h3 class="text-center mb-4">预约挂号系统-病人注册</h3>
 
                 <form @submit.prevent="handleSubmit" style="text-align: center">
                     <div class="input-group mb-3">
                         <span class="input-group-text"><i class="bi bi-person-vcard"></i></span>
-                        <input type="text" class="form-control" name="id" v-model="formData.id" placeholder="身份证号码"/>
+                        <input type="text" class="form-control" v-model="formData.patient_id" placeholder="身份证号码"/>
                     </div>
 
                     <div class="input-group mb-3">
                         <span class="input-group-text"><i class="bi bi-card-text"></i></span>
-                        <input type="text" class="form-control" name="name" v-model="formData.name" placeholder="姓名"/>
+                        <input type="text" class="form-control" v-model="formData.patient_name" placeholder="姓名"/>
                     </div>
 
 
                     <div class="input-group mb-3">
                         <span class="input-group-text"><i class="bi bi-gender-ambiguous"></i></span>
-                        <select v-model="formData.sex" name="sex" class="form-select form-control">
-                            <option value="">请选择</option>
+                        <select v-model="formData.patient_sex" class="form-select form-control">
+                            <option value="">请选择性别</option>
                             <option value="男">男</option>
                             <option value="女">女</option>
                         </select>
@@ -71,20 +74,26 @@ const handleSubmit = async () => {
 
                     <div class="input-group mb-3">
                         <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
-                        <input type="date" class="form-control" name="birthdate" v-model="formData.birthdate" placeholder="出生日期"/>
+                        <input type="date" class="form-control" v-model="formData.patient_birthdate" placeholder="出生日期"/>
                     </div>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text"><i class="bi bi-phone"></i></span>
+                        <input type="number" class="form-control" v-model="formData.patient_phone" placeholder="电话号码"/>
+                    </div>
+
 
                     <div class="input-group mb-3">
                         <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
-                        <input type="password" class="form-control" name="password" v-model="formData.password" placeholder="登录密码"/>
+                        <input type="password" class="form-control" v-model="formData.patient_password" placeholder="登录密码"/>
                     </div>
 
                     <div class="input-group mb-3">
-                        <input type="submit" class="btn btn-primary btn-block form-control" name="register" id="register" value="注册" />
+                        <input type="submit" class="btn btn-primary btn-block form-control" value="注册" />
                     </div>
 
                     <div class="input-group mb-3">
-                        <input type="button" class="btn btn-dark btn-block form-control" name="back" id="back" value="返回" onclick="window.location.href='/patient/login'"/>
+                        <input type="button" class="btn btn-dark btn-block form-control" value="返回" onclick="window.location.href='/patient/login'"/>
                     </div>
                 </form>
 
@@ -115,5 +124,13 @@ const handleSubmit = async () => {
         width: 80%;
         height: 35px;
         font-size: medium;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+    }
+    input[type='number'] {
+        -moz-appearance: textfield;
     }
 </style>

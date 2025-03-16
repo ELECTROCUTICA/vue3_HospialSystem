@@ -9,8 +9,8 @@ function confirmLogout() {
 
 <template>
     <div id="doctorNav">
-        <input type="button" class="navbtn btn btn-outline-primary btn-block form-control mb-3" name="flush" value="刷新就诊列表" onclick="window.location.reload()" /><br>
-        <input type="button" @click="confirmLogout()" class="navbtn btn btn-outline-danger btn-block form-control mb-3" name="logout" value="登出" /><br>
+        <input type="button" class="navbtn btn btn-outline-primary btn-block form-control mb-3" value="刷新就诊列表" onclick="window.location.reload()" /><br>
+        <input type="button" @click="confirmLogout()" class="navbtn btn btn-outline-danger btn-block form-control mb-3"  value="登出" /><br>
     </div>
 </template>
 

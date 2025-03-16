@@ -1,6 +1,7 @@
 <script setup>
 import { reactive, onMounted } from "vue";
 import axios from 'axios';
+import config from "@/config/config";
 
 const formData = reactive({
     id: '',
@@ -8,12 +9,17 @@ const formData = reactive({
 });
 
 onMounted(async () => {
-    document.querySelector("body").setAttribute("style", "background-color: #5c636a");
+    //document.querySelector("body").setAttribute("style", "background-color: #5c636a");
+    document.querySelector("body").setAttribute("style", "background-image: url(\"https://pic1.imgdb.cn/item/67cc43b2066befcec6e15df6.jpg\"); " +
+        "background-position: center; " +
+        "background-size: cover;" +
+        "height: 75vh; " +
+        "width: 100%; ");
 });
 
 const loginSubmit = async () => {
     await axios({
-        url: 'http://localhost:8080/admin/login/loginHandle',
+        url: `${config.spring_cloud_gateway_url}leader/admin/login/loginHandle`,
         method: 'post',
         headers: {
             "Content-Type": "application/x-www-form-urlencoded"
@@ -23,9 +29,11 @@ const loginSubmit = async () => {
             password: formData.password
         }
     }).then(response => {
-        alert(response.data.message);
-        if (response.data.state === 'ok') {
-            window.location.href = 'http://localhost:8081/admin';
+        if (response.data.status === 'ok') {
+            window.location.href = '/admin';
+        }
+        else {
+            alert(response.data.message);
         }
     }).catch(error => {
         console.log(error);
@@ -45,19 +53,18 @@ const loginSubmit = async () => {
                 <form @submit.prevent="loginSubmit" id="loginForm" style="text-align: center">
                     <div class="input-group mb-3">
                         <span class="input-group-text"><i class="bi bi-person-circle"></i></span>
-                        <input type="text" class="form-control" name="id" id="id" placeholder="ID" v-model="formData.id"/>
+                        <input type="text" class="form-control" placeholder="ID" v-model="formData.id"/>
                     </div>
 
                     <div class="input-group mb-3">
                         <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
-                        <input type="password" class="form-control" name="password" id="password" placeholder="密码" v-model="formData.password"/>
+                        <input type="password" class="form-control" placeholder="密码" v-model="formData.password"/>
                     </div>
 
                     <div class="input-group mb-3">
-                        <input type="submit" class="btn btn-primary btn-block form-control" name="login" id="login" value="进入系统" />
+                        <input type="submit" class="btn btn-primary btn-block form-control" value="进入系统" />
                     </div>
                 </form>
-
             </div>
         </div>
     </div>

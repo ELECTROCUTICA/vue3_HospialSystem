@@ -1,28 +1,31 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import PatientLogin from "@/views/patientLogin.vue";
-import PatientRegister from "@/views/patientRegister.vue";
+import PatientLogin from "@/views/Patient/patientLogin.vue";
+import PatientRegister from "@/views/Patient/patientRegister.vue";
 import PatientHeader from "@/components/patientHeader.vue";
 import PatientNav from "@/components/patientNav.vue";
-import PatientHome from "@/views/patientHome.vue";
-import PatientRecord from "@/views/patientRecord.vue";
-import PatientEdit from "@/views/patientEdit.vue";
-import PatientLogout from "@/views/patientLogout.vue";
-import PatientRegistration from "@/views/patientRegistration.vue";
-import AdminLogin from "@/views/adminLogin.vue";
+import PatientHome from "@/views/Patient/patientHome.vue";
+import PatientRecord from "@/views/Patient/patientRecord.vue";
+import PatientEdit from "@/views/Patient/patientEdit.vue";
+import PatientLogout from "@/views/Patient/patientLogout.vue";
+import PatientRegistration from "@/views/Patient/patientRegistration.vue";
+import AdminLogin from "@/views/Admin/adminLogin.vue";
 import AdminNav from "@/components/adminNav.vue";
-import AdminLogout from "@/views/adminLogout.vue";
-import AdminHome from "@/views/adminHome.vue";
-import AdminDoctorInfo from "@/views/adminDoctorInfo.vue";
-import AdminDepartment from "@/views/adminDepartment.vue";
-import AdminSchedule from "@/views/adminSchedule.vue";
-import AdminPatientManager from "@/views/adminPatientManager.vue";
-import errorPage from "@/views/errorPage.vue";
+import AdminLogout from "@/views/Admin/adminLogout.vue";
+import AdminHome from "@/views/Admin/adminHome.vue";
+import AdminDoctorInfo from "@/views/Admin/adminDoctorInfo.vue";
+import AdminDepartment from "@/views/Admin/adminDepartment.vue";
+import AdminSchedule from "@/views/Admin/adminSchedule.vue";
+import AdminPatientManager from "@/views/Admin/adminPatientManager.vue";
+import errorPage from "@/views/Common/errorPage.vue";
 import doctorHeader from "@/components/doctorHeader.vue";
 import doctorNav from "@/components/doctorNav.vue";
-import doctorPatientsList from "@/views/doctorPatientsList.vue";
-import doctorLogin from "@/views/doctorLogin.vue";
-import doctorLogout from "@/views/doctorLogout.vue";
-import PatientAIAdvice from "@/views/patientAIAdvice.vue";
+import doctorPatientsList from "@/views/Doctor/doctorPatientsList.vue";
+import doctorLogin from "@/views/Doctor/doctorLogin.vue";
+import doctorLogout from "@/views/Doctor/doctorLogout.vue";
+import PatientAIAdvice from "@/views/Patient/patientAIAdvice.vue";
+import AdminTitleManager from "@/views/Admin/adminTitleManager.vue";
+import AdminNoonManager from "@/views/Admin/adminNoonManager.vue";
+import PatientSearchDoctor from "@/views/Patient/patientSearchDoctor.vue";
 
 const routes = [
   {
@@ -72,7 +75,7 @@ const routes = [
     path: '/patient/ai',
     name: 'AIAdvice',
     meta: {
-      title: '挂号预约-AI智能导诊',
+      title: '挂号预约-DeepSeek智能导诊',
       requiresAuth: true
     },
     component: PatientAIAdvice
@@ -85,6 +88,15 @@ const routes = [
       requiresAuth: true
     },
     component: PatientRegistration
+  },
+  {
+    path: '/patient/searchDoctor',
+    name: 'PatientSearchDoctor',
+    meta: {
+      title: '挂号预约-搜索医生挂号',
+      requiresAuth: true
+    },
+    component: PatientSearchDoctor
   },
   {
     path: '/patient/record',
@@ -154,7 +166,7 @@ const routes = [
     component: AdminDoctorInfo
   },
   {
-    path: '/admin/department',
+    path: '/admin/departments',
     name: 'AdminDepartment',
     meta: {
       title: '医院管理系统-科室管理'
@@ -176,6 +188,22 @@ const routes = [
       title: '登出系统'
     },
     component: AdminLogout
+  },
+  {
+    path: '/admin/noonManager',
+    name: 'AdminNoonManager',
+    meta: {
+      title: '医院管理系统-午别时间管理'
+    },
+    component: AdminNoonManager
+  },
+  {
+    path: '/admin/titleManager',
+    name: 'AdminTitleManager',
+    meta: {
+      title: '医院管理系统-职称信息管理'
+    },
+    component: AdminTitleManager
   },
   {
     path: '/doctor/login',

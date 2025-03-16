@@ -1,6 +1,7 @@
 <script setup>
 import { reactive, onMounted} from 'vue'
 import axios from 'axios'
+import config from "@/config/config";
 
 const data1 = reactive({
     registrations: []
@@ -8,7 +9,7 @@ const data1 = reactive({
 
 onMounted(async () => {
     await axios({
-        url: 'http://localhost:8080/doctor/interface/getPatientsList',
+        url: `${config.spring_cloud_gateway_url}worker/doctor/getPatientRegisterList`,
         method: 'get'
     }).then(response => {
         data1.registrations = response.data;
@@ -17,7 +18,7 @@ onMounted(async () => {
     });
 });
 
-function changingStatus(id, status) {
+function changingStatus(register_id, status) {
     let alertmessage;
     if (status === 2) {
         alertmessage = '您确定已经完成对该病人的就诊吗？';
@@ -27,24 +28,28 @@ function changingStatus(id, status) {
     }
     if (confirm(alertmessage)) {
         axios({
-            url: 'http://localhost:8080/doctor/changingStatus',
+            url: `${config.spring_cloud_gateway_url}worker/doctor/changeRegisterStatus`,
             method: 'post',
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             },
             data: {
-                id: id,
+                register_id: register_id,
                 status: status
             },
         }).then(response => {
             alert(response.data.message);
-            if (response.data.state === 'ok') {
+            if (response.data.status === 'ok') {
                 window.location.reload();
             }
         }).catch(error => {
             console.log(error);
         });
     }
+}
+
+const complement = (value) => {                     //用于当分钟、秒小于10时，补上十位数的0
+    return value < 10 ? `0${value}` : value.toString()
 }
 
 </script>
@@ -63,18 +68,19 @@ function changingStatus(id, status) {
 
             <div class="col-8" id="content">
 
-                <table class="table table-striped">
+                <table class="table table-bordered">
 
                     <thead>
                     <tr>
                         <th>序号</th>
                         <th>就诊号</th>
+                        <th>当日号</th>
                         <th>患者姓名</th>
                         <th>患者身份证号码</th>
                         <th>患者性别</th>
                         <th>患者年龄</th>
                         <th>负责医生</th>
-                        <th>预约就诊时间</th>
+                        <th>就诊时间</th>
                         <th>就诊状态</th>
                         <th>操作</th>
                     </tr>
@@ -82,22 +88,26 @@ function changingStatus(id, status) {
 
                     <tbody>
                         <tr v-for="(registration, key) in data1.registrations" :key="key">
-                            <td>{{key}}</td>
-                            <td>{{registration.id}}</td>
+                            <td>{{key + 1}}</td>
+                            <td>{{registration.register_id}}</td>
+                            <td>{{registration.serial_id}}</td>
                             <td>{{registration.patient_name}}</td>
                             <td>{{registration.patient_id}}</td>
                             <td>{{registration.patient_sex}}</td>
                             <td>{{registration.patient_age}}</td>
                             <td>{{registration.doctor_name}}</td>
-                            <td>{{registration.visit_date}}</td>
+                            <td>{{registration.visit_date}} {{registration.begin_time_hour}}:{{complement(registration.begin_time_minute)}}-{{registration.end_time_hour}}:{{complement(registration.end_time_minute)}}</td>
                             <td>
-                                <span v-if="registration.status === 0">
-                                    <span>已取消</span>
+                                <span v-if="registration.registration_status === -1">
+                                    <span>医生取消</span>
                                 </span>
-                                <span v-else-if="registration.status === 1">
+                                <span v-else-if="registration.registration_status === 0">
+                                    <span>患者取消</span>
+                                </span>
+                                <span v-else-if="registration.registration_status === 1">
                                     <span>待就诊</span>
                                 </span>
-                                <span v-else-if="registration.status === 2">
+                                <span v-else-if="registration.registration_status === 2">
                                     <span>已就诊</span>
                                 </span>
                                 <span v-else>
@@ -106,9 +116,9 @@ function changingStatus(id, status) {
                             </td>
 
                             <td>
-                                <span v-if="registration.status === 1">
-                                     <input type="button" @click="changingStatus(registration.id, 2)" class="btn btn-primary btn-block" style="margin: 0 3px 0 3px" name="finish" value="完成就诊" />
-                                     <input type="button" @click="changingStatus(registration.id, 0)" class="btn btn-danger btn-block" style="margin: 0 3px 0 3px" name="cancel" value="取消就诊"/>
+                                <span v-if="registration.registration_status === 1">
+                                     <input type="button" @click="changingStatus(registration.register_id, 2)" class="btn btn-primary btn-block" style="margin: 0 3px 0 3px" value="完成就诊" />
+                                     <input type="button" @click="changingStatus(registration.register_id, -1)" class="btn btn-danger btn-block" style="margin: 0 3px 0 3px" value="取消就诊"/>
                                 </span>
                                 <span v-else>
                                     <input type="button" disabled class="btn btn-primary btn-block" style="margin: 0 3px 0 3px" value="完成就诊">

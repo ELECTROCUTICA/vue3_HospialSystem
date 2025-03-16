@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useRoute } from 'vue-router';
 import $ from 'jquery';
 import { Modal } from 'bootstrap';
+import config from "@/config/config";
 
 let requestParam_p = Number(useRoute().query.p);
 if (isNaN(requestParam_p)) requestParam_p = 1;            //地址中的p参数
@@ -21,21 +22,23 @@ const data1 = reactive({
 });
 
 function search() {
-    let base = '/admin/patientManager?p=1&keyword=';
-    window.location.href= base + encodeURIComponent(keyword.content);
+    window.location.href = `/admin/patientManager?p=1&keyword=${encodeURIComponent(keyword.content)}`;
 }
-function resetPassword(patient_id) {
-    if (confirm("你确定要重置用户 " + patient_id + " 的登录密码吗？")) {
+
+function resetPassword(patient_id, patient_name) {
+    if (confirm(`你确定要重置用户${patient_id} ${patient_name}的登录密码吗？`)) {
         axios({
-            url: 'http://localhost:8080/admin/interface/resetPassword',
-            method: 'get',
-            params: {
-                p_id: patient_id
+            url: `${config.spring_cloud_gateway_url}leader/admin/patientManager/resetPassword`,
+            method: 'post',
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            data: {
+                patient_id: patient_id
             }
         }).then(response => {
             alert(response.data.message);
             window.location.reload();
-
         }).catch(error => {
             console.log(error);
         });
@@ -44,7 +47,7 @@ function resetPassword(patient_id) {
 
 onMounted(async () => {
     const data1Response = await axios({
-        url: 'http://localhost:8080/admin/interface/patientManager',
+        url: `${config.spring_cloud_gateway_url}leader/admin/patientManager`,
         method: 'get',
         params: {
             p: requestParam_p,
@@ -63,18 +66,18 @@ onMounted(async () => {
             previous = '<li class="page-item"><a class="page-link" href="" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>';
         }
         else {
-            previous = '<li class="page-item"><a class="page-link" href="patientManager?p=' + (requestParam_p - 1) + '" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>';
+            previous = `<li class="page-item"><a class="page-link" href="patientManager?p=${requestParam_p - 1}" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>`;
         }
         $('#page_navbtn').append(previous);
-        for (var i = 1; i <= data1.pages_count; i++) {
-            var navbtn1 = '<li class="page-item"><a class="page-link" href="patientManager?p=' + i + '">' + i + '</a></li>';
+        for (let i = 1; i <= data1.pages_count; i++) {
+            let navbtn1 = `<li class="page-item"><a class="page-link" href="patientManager?p=${i}">${i}</a></li>`;
             $('#page_navbtn').append(navbtn1);
         }
         if (requestParam_p === data1.pages_count) {
             next = '<li class="page-item"><a class="page-link" href="" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>';
         }
         else {
-            next = '<li class="page-item"><a class="page-link" href="patientManager?p=' + (requestParam_p + 1) + '" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>';
+            next = `<li class="page-item"><a class="page-link" href="patientManager?p=${requestParam_p + 1}" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>`;
         }
         $('#page_navbtn').append(next);
     }
@@ -87,18 +90,18 @@ onMounted(async () => {
             previous = '<li class="page-item"><a class="page-link" href="" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>';
         }
         else {
-            previous = '<li class="page-item"><a class="page-link" href="patientManager?p=' + (requestParam_p - 1) + '&keyword=' + requestParam_keyword + '" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>';
+            previous = `<li class="page-item"><a class="page-link" href="patientManager?p=${requestParam_p - 1}&keyword=${requestParam_keyword}" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>`
         }
         $('#page_navbtn').append(previous);
-        for (var j = 1; j <= data1.pages_count; j++) {
-            var navbtn2 = '<li class="page-item"><a class="page-link" href="patientManager?p=' + j + '&keyword=' + requestParam_keyword + '">' + j + '</a></li>';
+        for (let j = 1; j <= data1.pages_count; j++) {
+            let navbtn2 = `<li class="page-item"><a class="page-link" href="patientManager?p=${j}&keyword=${requestParam_keyword}">${j}</a></li>`;
             $('#page_navbtn').append(navbtn2);
         }
         if (requestParam_p === data1.pages_count) {
             next = '<li class="page-item"><a class="page-link" href="" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>';
         }
         else {
-            next = '<li class="page-item"><a class="page-link" href="patientManager?p=' + (requestParam_p + 1) + '&keyword=' + requestParam_keyword + '" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>';
+            next = `<li class="page-item"><a class="page-link" href="patientManager?p=${requestParam_p + 1}&keyword=${requestParam_keyword}" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>`;
         }
         $('#page_navbtn').append(next);
     }
@@ -129,7 +132,7 @@ onMounted(async () => {
         <form @submit.prevent="search">
             <div class="input-group mt-3">
                 <span class="input-group-text"><i class="bi bi-search"></i></span>
-                <input type="text" class="form-control col-8" name="keyword" id="keyword" placeholder="身份证号码/姓名搜索..." v-model="keyword.content"/>
+                <input type="text" class="form-control col-8" name="keyword" id="keyword" placeholder="身份证号码/姓名/拼音码搜索..." v-model="keyword.content"/>
                 <input type="submit" class="btn btn-outline-success my-2 my-sm-0 col-3" name="search" id="search" value="搜索" />
             </div>
         </form>
@@ -139,14 +142,14 @@ onMounted(async () => {
             <div class="col-12">
                 <ul id="bar" class="list-group list-group-horizontal">
                     <li class="list-group-item">
-                        <input type="button" class="btn btn-warning btn-block" name="goMain" id="goMain" value="查看所有用户" onclick="location.href='/admin/patientManager' "/>
+                        <a href="/admin/patientManager"><input type="button" class="btn btn-warning btn-block" value="查看所有用户"/></a>
                     </li>
                 </ul>
             </div>
         </div>
 
         <div class="mt-3" id="content">
-            <table class="table table-hover">
+            <table class="table table-bordered">
                 <thead>
                 <tr>
                     <th>身份证号码</th>
@@ -160,13 +163,13 @@ onMounted(async () => {
 
                 <tbody id="list">
                 <tr v-for="(patient, key) in data1.patients" :key="key">
-                    <td>{{patient.id}}</td>
-                    <td>{{patient.name}}</td>
-                    <td>{{patient.sex}}</td>
-                    <td>{{patient.birthdate}}</td>
-                    <td>{{patient.password}}</td>
+                    <td>{{patient.patient_id}}</td>
+                    <td>{{patient.patient_name}}</td>
+                    <td>{{patient.patient_sex}}</td>
+                    <td>{{patient.patient_birthdate}}</td>
+                    <td>{{patient.patient_password}}</td>
                     <td>
-                        <input type="button" @click="resetPassword(patient.id)" class="btn btn-primary btn-block" name="editPatient" style="margin: 0 3px 0 3px" value="重置登录密码" />
+                        <input type="button" @click="resetPassword(patient.patient_id, patient.patient_name)" class="btn btn-primary btn-block" style="margin: 0 3px 0 3px" value="重置登录密码" />
                     </td>
                 </tr>
 

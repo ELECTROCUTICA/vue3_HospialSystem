@@ -1,25 +1,31 @@
 <script setup>
 import { reactive, onMounted } from 'vue';
 import axios from 'axios';
+import config from "@/config/config";
 
 
 const formData = reactive({
-    id: '',
-    name: '',
-    sex: '',
-    birthdate: '',
-    password: ''
+    patient_id: '',
+    patient_name: '',
+    patient_sex: '',
+    patient_birthdate: '',
+    patient_phone: '',
+    patient_password: '',
+    create_time: ''
 });
 
 onMounted(async () => {
     await axios({
-        url: 'http://localhost:8080/patient/interface/getPatient',
+        url: `${config.spring_cloud_gateway_url}app/patient/getPatient`,
         method: 'get'
     }).then(response => {
-        formData.id = response.data.id;
-        formData.name = response.data.name;
-        formData.sex = response.data.sex;
-        formData.birthdate = response.data.birthdate;
+        formData.patient_id = response.data.patient_id;
+        formData.patient_name = response.data.patient_name;
+        formData.patient_sex = response.data.patient_sex;
+        formData.patient_birthdate = response.data.patient_birthdate;
+        formData.patient_phone = response.data.patient_phone
+        formData.patient_password = response.data.patient_password;
+        formData.create_time = response.data.create_time;
     }).catch(error => {
         console.log(error);
     });
@@ -27,22 +33,22 @@ onMounted(async () => {
 
 function submitEdit() {
     axios({
-        url: 'http://localhost:8080/patient/edit/editHandle',
+        url: `${config.spring_cloud_gateway_url}app/patient/edit/editHandle`,
         method: 'post',
         headers: {
             "Content-Type": "application/x-www-form-urlencoded"
         },
         data: {
-            id: formData.id,
-            name: formData.name,
-            sex: formData.sex,
-            birthdate: formData.birthdate,
-            password: formData.password,
+            patient_id: formData.patient_id,
+            patient_name: formData.patient_name,
+            patient_sex: formData.patient_sex,
+            patient_birthdate: formData.patient_birthdate,
+            patient_phone: formData.patient_phone,
+            patient_password: formData.patient_password
         }
     }).then(response => {
-
         alert(response.data.message);
-        if (response.data.state === 'ok') {
+        if (response.data.status === 'ok') {
             localStorage.removeItem("jwt_patient");
             window.location.href = "/patient/login";
         }
@@ -74,35 +80,41 @@ function submitEdit() {
                     </div>
                     <div class="input-group mb-3">
                         <span class="input-group-text">身份证号码</span>
-                        <input type="text" disabled class="form-control" name="id" id="id" v-model="formData.id"/>
+                        <input type="text" class="form-control" readonly disabled v-model="formData.patient_id"/>
                     </div>
 
                     <div class="input-group mb-3">
                         <span class="input-group-text">姓名</span>
-                        <input type="text" class="form-control" name="name" id="name" v-model="formData.name"/>
+                        <input type="text" class="form-control" v-model="formData.patient_name"/>
                     </div>
 
 
                     <div class="input-group mb-3">
                         <span class="input-group-text">性别</span>
-                        <select id="sex" name="sex" class="form-select form-control" v-model="formData.sex">
+                        <select id="sex" name="sex" class="form-select form-control" v-model="formData.patient_sex">
                             <option value="男">男</option>
                             <option value="女">女</option>
                         </select>
                     </div>
+
                     <div class="input-group mb-3">
                         <span class="input-group-text">出生日期</span>
-                        <input type="date" class="form-control" name="birthdate" id="birthdate" placeholder="出生日期" v-model="formData.birthdate"/>
+                        <input type="date" class="form-control" placeholder="出生日期" v-model="formData.patient_birthdate"/>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">电话号码</span>
+                        <input type="number" class="form-control" placeholder="电话号码" v-model="formData.patient_phone"/>
                     </div>
 
                     <div class="input-group mb-3">
                         <span class="input-group-text">登录密码</span>
-                        <input type="password" class="form-control" name="password" id="password" placeholder="修改登录密码" v-model="formData.password"/>
+                        <input type="password" class="form-control" placeholder="修改登录密码" v-model="formData.patient_password"/>
                     </div>
 
 
                     <div class="input-group mb-3">
-                        <input type="submit" class="btn btn-primary btn-block form-control" name="register" id="register" value="提交修改" />
+                        <input type="submit" class="btn btn-primary btn-block form-control" value="提交修改" />
                     </div>
 
                 </form>
@@ -116,4 +128,11 @@ function submitEdit() {
 
 <style scoped>
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+input[type='number'] {
+    -moz-appearance: textfield;
+}
 </style>

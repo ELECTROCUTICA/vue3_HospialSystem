@@ -1,10 +1,11 @@
 <script setup>
 import { onMounted } from 'vue';
 import axios from 'axios';
+import config from "@/config/config";
 
 onMounted(async () => {
     await axios({
-        url: 'http://localhost:8080/patient/interface/logout',
+        url: `${config.spring_cloud_gateway_url}app/patient/logout`,
         method: 'get'
     }).then(response => {
         alert(response.data.message);
@@ -13,17 +14,6 @@ onMounted(async () => {
     }).catch(error => {
         console.log(error);
     });
-
-    // await axios({
-    //     url: 'http://localhost:5000/patient/api/logout',
-    //     method: 'get'
-    // }).then(response => {
-    //     alert(response.data.message);
-    //     localStorage.removeItem("jwt_patient");
-    //     window.location.href = '/patient/login'
-    // }).catch(error => {
-    //     console.log(error);
-    // });
 });
 
 </script>

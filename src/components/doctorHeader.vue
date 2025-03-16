@@ -1,25 +1,28 @@
 <script setup>
 import { reactive, onMounted } from "vue"
 import axios from "axios"
+import config from "@/config/config";
 
 const doctor = reactive({
-    id: '',
-    name: '',
-    dep_no: '',
+    doctor_id: null,
+    doctor_name: '',
+    dep_no: null,
     dep_name: '',
-    title: ''
+    title_no: -1,
+    title_name: ''
 });
 
 onMounted(async () => {
     await axios({
-        url: 'http://localhost:8080/doctor/interface/getDoctor',
+        url: `${config.spring_cloud_gateway_url}worker/doctor/getDoctor`,
         method: 'get'
     }).then(response => {
-        doctor.id = response.data.id;
-        doctor.name = response.data.name;
+        doctor.doctor_id = response.data.doctor_id;
+        doctor.doctor_name = response.data.doctor_name;
         doctor.dep_no = response.data.dep_no;
         doctor.dep_name = response.data.dep_name;
-        doctor.title = response.data.title;
+        doctor.title_no = response.data.title_no;
+        doctor.title_name = response.data.title_name;
     }).catch(error => {
         console.log(error);
     });
@@ -33,13 +36,13 @@ onMounted(async () => {
             <div class="card-body">
                 <div class="row mb-1">
                     <div class="col-4 mt-1">
-                        <h3 class="card-title text-white" >{{doctor.name}}</h3>
+                        <h3 class="card-title text-white" >{{doctor.doctor_name}}</h3>
                     </div>
                     <div class="col-8 mt-1">
-                        <p>{{doctor.dep_name}} {{doctor.title}}</p>
+                        <p>{{doctor.dep_name}} {{doctor.title_name}}</p>
                     </div>
                 </div>
-                <p class="card-text mt2">职工号：{{doctor.id}}</p>
+                <p class="card-text mt2">职工号：{{doctor.doctor_id}}</p>
             </div>
         </div>
 

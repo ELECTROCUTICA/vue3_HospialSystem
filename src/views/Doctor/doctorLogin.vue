@@ -1,31 +1,32 @@
 <script setup>
 import { reactive, onMounted } from "vue";
 import axios from 'axios';
+import config from "@/config/config";
 
 onMounted(async () => {
     document.querySelector("body").setAttribute("style", "background-color: #0dcaf0");
 });
 
 const formData = reactive({
-    id: '',
-    password: '',
+    doctor_id: '',
+    doctor_password: '',
 });
 
 const loginSubmit = async () => {
     await axios({
-        url: 'http://localhost:8080/doctor/login/loginHandle',
+        url: `${config.spring_cloud_gateway_url}worker/doctor/login/loginHandle`,
         method: 'post',
         headers: {
             "Content-Type": "application/x-www-form-urlencoded"
         },
         data: {
-            id: formData.id,
-            password: formData.password
+          doctor_id: formData.doctor_id,
+          doctor_password: formData.doctor_password
         }
     }).then(response => {
         alert(response.data.message);
-        if (response.data.state === 'ok') {
-            window.location.href = 'http://localhost:8081/doctor/list';
+        if (response.data.status === 'ok') {
+            window.location.href = '/doctor/list';
         }
     }).catch(error => {
         console.log(error);
@@ -42,21 +43,21 @@ const loginSubmit = async () => {
         <div id="frame">
             <div style="width: 80%; margin: 0 auto">
 
-                <h3 class="text-center mb-4">医生就诊系统登录</h3>
+                <h3 class="text-center mb-4">医师就诊系统登录</h3>
 
                 <form @submit.prevent="loginSubmit" style="text-align: center">
                     <div class="input-group mb-3">
                         <span class="input-group-text"><i class="bi bi-person-vcard"></i></span>
-                        <input type="text" class="form-control" name="id" id="id" placeholder="职工号" v-model="formData.id"/>
+                        <input type="number" class="form-control" placeholder="职工号" v-model="formData.doctor_id"/>
                     </div>
 
                     <div class="input-group mb-3">
                         <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
-                        <input type="password" class="form-control" name="password" id="password" placeholder="密码" v-model="formData.password"/>
+                        <input type="password" class="form-control" placeholder="密码" v-model="formData.doctor_password"/>
                     </div>
 
                     <div class="input-group mb-3">
-                        <input type="submit" class="btn btn-primary btn-block form-control" name="login" id="login" value="登陆"/>
+                        <input type="submit" class="btn btn-primary btn-block form-control" value="登陆"/>
                     </div>
                 </form>
 
@@ -86,5 +87,13 @@ const loginSubmit = async () => {
         width: 80%;
         height: 35px;
         font-size: medium;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+    }
+    input[type='number'] {
+        -moz-appearance: textfield;
     }
 </style>
