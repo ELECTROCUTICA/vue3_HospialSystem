@@ -12,6 +12,7 @@ const data1 = reactive({
 });
 
 const submitRegistrationFormData = reactive({
+    schedule_id: 0,
     doctor_id: 0,
     date: '',
     noon_id: 0
@@ -118,6 +119,7 @@ async function clickShowDescription(doctor_id, doctor_name) {
 window.clickShowDescription = clickShowDescription;
 
 const showConfirmRegisterModal = (r) => {
+    submitRegistrationFormData.schedule_id = r.schedule_id;
     submitRegistrationFormData.doctor_id = r.doctor_id;
     submitRegistrationFormData.date = r.work_date;
     submitRegistrationFormData.noon_id = r.noon_id;
@@ -125,7 +127,6 @@ const showConfirmRegisterModal = (r) => {
     $('#visit_time').val(`${r.work_date} ${r.noon_name} ${r.begin_time_hour}:${complement(r.begin_time_minute)}-${r.end_time_hour}:${complement(r.end_time_minute)}`);
 
 };
-
 
 const submitRegistration = async () => {
     await axios({
@@ -135,18 +136,16 @@ const submitRegistration = async () => {
             "Content-Type": "application/x-www-form-urlencoded"
         },
         data: {
+            schedule_id: submitRegistrationFormData.schedule_id,
             doctor_id: submitRegistrationFormData.doctor_id,
             date: submitRegistrationFormData.date,
             noon_id: submitRegistrationFormData.noon_id
         }
     }).then((response) => {
+        alert(response.data.message);
+        $('#closeSubmitRegistrationModal').click();
         if (response.data.status === 'ok') {
-            alert(response.data.message);
-            $('#closeSubmitRegistrationModal').click();
             refreshTable();
-        }
-        else {
-            alert(response.data.message);
         }
     });
 }
@@ -198,6 +197,10 @@ onMounted(async () => {
                 </div>
                 <div class="modal-body">
                     <form @submit.prevent="submitRegistration">
+                        <div class="input-group mb-3 visually-hidden">
+                            <span class="input-group-text">schedule_id</span>
+                            <input type="text" class="form-control" disabled v-model="submitRegistrationFormData.schedule_id" />
+                        </div>
                         <div class="input-group mb-3 visually-hidden">
                             <span class="input-group-text">doctor_id</span>
                             <input type="text" class="form-control" disabled v-model="submitRegistrationFormData.doctor_id" />
@@ -298,7 +301,8 @@ onMounted(async () => {
                                 <ul class="list-group" id="list2">
                                     <li v-for="(ds, key) in response.work_doctors" :key="key" class="list-group-item list-group-item-action">{{ds.doctor_name}} {{ds.dep_name}} {{ds.title_name}}
                                                 余号：{{ds.remain_register_count + ds.append_register_count}}
-                                        <button @click="showConfirmRegisterModal(ds)" class="btn btn-primary btn-block float-end m-1" data-bs-toggle="modal" data-bs-target="#submitRegistrationModal">挂号</button>
+                                        <button v-if="ds.remain_register_count > 0" @click="showConfirmRegisterModal(ds)" class="btn btn-primary btn-block float-end m-1" data-bs-toggle="modal" data-bs-target="#submitRegistrationModal">挂号</button>
+                                        <button v-else class="btn btn-primary btn-secondary float-end m-1" disabled>已无余号</button>
                                         <button @click="clickShowDescription(ds.doctor_id, ds.doctor_name)" class="btn btn-secondary btn-block float-end m-1" data-bs-toggle="modal" data-bs-target="#doctorDescriptionModal">医生简介</button>
                                     </li>
                                 </ul>

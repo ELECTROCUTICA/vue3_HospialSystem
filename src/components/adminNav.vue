@@ -4,7 +4,7 @@ import axios from 'axios';
 import config from "@/config/config";
 
 const admin = reactive({
-    id: undefined
+    id: ''
 });
 
 function confirmLogout() {
@@ -18,14 +18,14 @@ onMounted(async () => {
         url: `${config.spring_cloud_gateway_url}leader/admin/getAdmin`,
         method: 'get',
     }).then(response => {
-        let admin_id = response.data.id;
-        if (admin_id === undefined || admin_id === '') {
-            window.location.href = '/admin/login';
-        }
-        admin.id = admin_id;
+        admin.id = response.data.id;
     }).catch(error => {
         console.log(error);
     });
+
+    if (admin.id === undefined || admin.id === null || admin.id === '') {
+        window.location.href = '/admin/login';
+    }
 });
 
 

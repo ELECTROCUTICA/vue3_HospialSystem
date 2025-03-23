@@ -30,7 +30,6 @@ onMounted(async () => {
         patient.patient_sex = response.data.patient_sex;
         patient.patient_birthdate = response.data.patient_birthdate;
         patient.patient_age = response.data.patient_age;
-        
     }).catch(error => {
         console.log(error);
     });
@@ -49,7 +48,7 @@ onMounted(async () => {
                         <h3 class="card-title text-white" v-text="patient.patient_name"></h3>
                     </div>
                     <div class="col-8 mt-1">
-                        <p> {{patient.patient_name}}  {{patient.patient_age}}岁</p>
+                        <p> {{patient.patient_sex}}  {{patient.patient_age}}岁</p>
                     </div>
                 </div>
                 <p>身份证号码：{{patient.patient_id}}</p>

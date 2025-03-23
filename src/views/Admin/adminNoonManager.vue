@@ -5,9 +5,7 @@ import $ from "jquery";
 import config from "@/config/config";
 
 const data1 = reactive({
-    noons: [],
-    begin_time_str: [],
-    end_time_str: []
+    noons: []
 });
 
 const insertNoonModalFormData = reactive({
@@ -37,8 +35,6 @@ onMounted(async () => {
         method: 'get'
     });
     data1.noons = data1Response.data.noons;
-    data1.begin_time_str = data1Response.data.begin_time_str;
-    data1.end_time_str = data1Response.data.end_time_str;
 });
 
 async function submitInsert() {
@@ -111,7 +107,9 @@ async function submitUpdate() {
         }
     });
 }
-
+const complement = (value) => {                     //用于当分钟、秒小于10时，补上十位数的0
+    return value < 10 ? `0${value}` : value.toString()
+}
 
 </script>
 
@@ -235,8 +233,8 @@ async function submitUpdate() {
                         <div class="input-group mb-3">
                             <span class="input-group-text">午别有效性</span>
                             <select class="form-select form-control" v-model="updateNoonModalFormData.valid_flag">
-                                <option value="1">有效</option>
-                                <option value="0">无效</option>
+                                <option :value="1">有效</option>
+                                <option :value="0">无效</option>
                             </select>
                         </div>
 
@@ -281,8 +279,8 @@ async function submitUpdate() {
                 <tr v-for="(noon, key) in data1.noons" :key="key">
                     <td class="align-content-center">{{noon.noon_id}}</td>
                     <td class="align-content-center">{{noon.noon_name}}</td>
-                    <td class="align-content-center">{{data1.begin_time_str[key]}}</td>
-                    <td class="align-content-center">{{data1.end_time_str[key]}}</td>
+                    <td class="align-content-center">{{noon.begin_time_hour}}:{{complement(noon.begin_time_minute)}}</td>
+                    <td class="align-content-center">{{noon.end_time_hour}}:{{noon.end_time_minute}}</td>
                     <td class="align-content-center">{{noon.noon_memo}}</td>
                     <td class="align-content-center" v-if="noon.valid_flag === 1">是</td>
                     <td class="align-content-center" v-else>否</td>

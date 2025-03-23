@@ -2,7 +2,6 @@
 import { reactive, onMounted } from 'vue';
 import axios from 'axios';
 import { useRoute } from 'vue-router';
-import $ from 'jquery';
 import config from "@/config/config";
 
 
@@ -12,13 +11,16 @@ if (requestParam_p === undefined || isNaN(requestParam_p)) {
 }
 
 const data1 = reactive({
-    current: -1,
-    pages_count: -1,
-    records_count: -1,
+    current: 0,
+    pages_count: 0,
+    records_count: 0,
     registrations: []
 });
 
 onMounted(async () => {
+    if (requestParam_p <= 0) {
+        window.location.href = '/patient/record?p=1';
+    }
     const data1Response = await axios({
         url: `${config.spring_cloud_gateway_url}app/patient/getRecords`,
         method: 'get',
@@ -27,32 +29,13 @@ onMounted(async () => {
         },
     });
 
-
     data1.current = data1Response.data.current;
     data1.pages_count = data1Response.data.pages_count;
     data1.records_count = data1Response.data.records_count
     data1.registrations = data1Response.data.registrations;
-
-    let previous;
-    let next;
-    if (requestParam_p ===  1) {
-        previous = '<li class="page-item"><a class="page-link" href="" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>';
+    if (requestParam_p > data1.pages_count) {
+        window.location.href = '/patient/record?p=1';
     }
-    else {
-        previous = `<li class="page-item"><a class="page-link" href="record?p=${requestParam_p - 1}" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>`
-    }
-    $('#page_navbtn').append(previous);
-    for (let i = 1; i <= data1.pages_count; i++) {
-        let navbtn = `<li class="page-item"><a class="page-link" href="record?p=${i}">${i}</a></li>`;
-        $('#page_navbtn').append(navbtn);
-    }
-    if (requestParam_p === data1.pages_count) {
-        next = '<li class="page-item"><a class="page-link" href="" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>';
-    }
-    else {
-        next = `<li class="page-item"><a class="page-link" href="record?p=${requestParam_p + 1}" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>`;
-    }
-    $('#page_navbtn').append(next);
 });
 
 function cancelRegistration(register_id, date, dep_name, doctor_name) {
@@ -111,7 +94,7 @@ function cancelRegistration(register_id, date, dep_name, doctor_name) {
 
                     <tbody>
                         <tr v-for="(registration, key) in data1.registrations" :key="key">
-                            <td>{{(requestParam_p - 1) * 10 + key + 1}}</td>
+                            <td>{{(requestParam_p - 1) * config.admin_data_count_per_page + key + 1}}</td>
                             <td>{{registration.doctor_name}}</td>
                             <td>{{registration.title_name}}</td>
                             <td>{{registration.dep_name}}</td>
@@ -142,6 +125,13 @@ function cancelRegistration(register_id, date, dep_name, doctor_name) {
                 <div class="input-group mt-3">
                     <nav aria-label="Page navigation example">
                         <ul class="pagination" id="page_navbtn">
+                            <li v-if="requestParam_p ===  1" class="page-item"><a class="page-link" href="" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>
+                            <li v-else class="page-item"><a class="page-link" :href="'record?p=' + (requestParam_p - 1)" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>
+
+                            <li v-for="i in data1.pages_count" :key="i" class="page-item"><a class="page-link" :href="'record?p=' + i">{{i}}</a></li>
+
+                            <li v-if="requestParam_p === data1.pages_count" class="page-item"><a class="page-link" href="" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>
+                            <li v-else class="page-item"><a class="page-link" :href="'record?p=' + (requestParam_p + 1)" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>
                         </ul>
                     </nav>
                 </div>

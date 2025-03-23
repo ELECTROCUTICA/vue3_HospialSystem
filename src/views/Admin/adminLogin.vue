@@ -6,15 +6,29 @@ import config from "@/config/config";
 const formData = reactive({
     id: '',
     password: '',
-});
+})
+
 
 onMounted(async () => {
+    await axios({
+        url: `${config.spring_cloud_gateway_url}leader/admin/getAdmin`,
+        method: 'get',
+    }).then(response => {
+        if (response.data.id !== undefined && response.data.id !== null && response.data.id !== '') {
+            window.location.href = '/admin'
+        }
+    }).catch(error => {
+        console.log(error);
+    });
+
     //document.querySelector("body").setAttribute("style", "background-color: #5c636a");
     document.querySelector("body").setAttribute("style", "background-image: url(\"https://pic1.imgdb.cn/item/67cc43b2066befcec6e15df6.jpg\"); " +
         "background-position: center; " +
         "background-size: cover;" +
         "height: 75vh; " +
         "width: 100%; ");
+
+
 });
 
 const loginSubmit = async () => {
@@ -53,12 +67,12 @@ const loginSubmit = async () => {
                 <form @submit.prevent="loginSubmit" id="loginForm" style="text-align: center">
                     <div class="input-group mb-3">
                         <span class="input-group-text"><i class="bi bi-person-circle"></i></span>
-                        <input type="text" class="form-control" placeholder="ID" v-model="formData.id"/>
+                        <input type="text" class="form-control" placeholder="ID" v-model="formData.id" maxlength="20"/>
                     </div>
 
                     <div class="input-group mb-3">
                         <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
-                        <input type="password" class="form-control" placeholder="密码" v-model="formData.password"/>
+                        <input type="password" class="form-control" placeholder="密码" v-model="formData.password" maxlength="20"/>
                     </div>
 
                     <div class="input-group mb-3">

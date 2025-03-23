@@ -2,8 +2,6 @@
 import { reactive, onMounted } from 'vue';
 import axios from 'axios';
 import { useRoute } from 'vue-router';
-import $ from 'jquery';
-import { Modal } from 'bootstrap';
 import config from "@/config/config";
 
 let requestParam_p = Number(useRoute().query.p);
@@ -16,9 +14,9 @@ const keyword = reactive({
 
 const data1 = reactive({
     patients: [],
-    patients_count: -1,
-    pages_count: -1,
-    current: -1,
+    patients_count: 0,
+    pages_count: 0,
+    current: 0,
 });
 
 function search() {
@@ -58,53 +56,53 @@ onMounted(async () => {
     data1.current = data1Response.data.current;
     data1.pages_count = data1Response.data.pages_count;
     data1.doctors_count = data1Response.data.patients_count
-
-    let previous;
-    let next;
-    if (requestParam_keyword === null || requestParam_keyword === undefined || requestParam_keyword === '') {
-        if (requestParam_p ===  1) {
-            previous = '<li class="page-item"><a class="page-link" href="" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>';
-        }
-        else {
-            previous = `<li class="page-item"><a class="page-link" href="patientManager?p=${requestParam_p - 1}" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>`;
-        }
-        $('#page_navbtn').append(previous);
-        for (let i = 1; i <= data1.pages_count; i++) {
-            let navbtn1 = `<li class="page-item"><a class="page-link" href="patientManager?p=${i}">${i}</a></li>`;
-            $('#page_navbtn').append(navbtn1);
-        }
-        if (requestParam_p === data1.pages_count) {
-            next = '<li class="page-item"><a class="page-link" href="" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>';
-        }
-        else {
-            next = `<li class="page-item"><a class="page-link" href="patientManager?p=${requestParam_p + 1}" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>`;
-        }
-        $('#page_navbtn').append(next);
-    }
-    else {
-        if (data1.doctors_count === 0) {
-            const modal = new Modal($('#noticeModal'));
-            modal.show();
-        }
-        if (requestParam_p ===  1) {
-            previous = '<li class="page-item"><a class="page-link" href="" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>';
-        }
-        else {
-            previous = `<li class="page-item"><a class="page-link" href="patientManager?p=${requestParam_p - 1}&keyword=${requestParam_keyword}" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>`
-        }
-        $('#page_navbtn').append(previous);
-        for (let j = 1; j <= data1.pages_count; j++) {
-            let navbtn2 = `<li class="page-item"><a class="page-link" href="patientManager?p=${j}&keyword=${requestParam_keyword}">${j}</a></li>`;
-            $('#page_navbtn').append(navbtn2);
-        }
-        if (requestParam_p === data1.pages_count) {
-            next = '<li class="page-item"><a class="page-link" href="" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>';
-        }
-        else {
-            next = `<li class="page-item"><a class="page-link" href="patientManager?p=${requestParam_p + 1}&keyword=${requestParam_keyword}" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>`;
-        }
-        $('#page_navbtn').append(next);
-    }
+    //
+    // let previous;
+    // let next;
+    // if (requestParam_keyword === null || requestParam_keyword === undefined || requestParam_keyword === '') {
+    //     if (requestParam_p ===  1) {
+    //         previous = '<li class="page-item"><a class="page-link" href="" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>';
+    //     }
+    //     else {
+    //         previous = `<li class="page-item"><a class="page-link" href="patientManager?p=${requestParam_p - 1}" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>`;
+    //     }
+    //     $('#page_navbtn').append(previous);
+    //     for (let i = 1; i <= data1.pages_count; i++) {
+    //         let navbtn1 = `<li class="page-item"><a class="page-link" href="patientManager?p=${i}">${i}</a></li>`;
+    //         $('#page_navbtn').append(navbtn1);
+    //     }
+    //     if (requestParam_p === data1.pages_count) {
+    //         next = '<li class="page-item"><a class="page-link" href="" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>';
+    //     }
+    //     else {
+    //         next = `<li class="page-item"><a class="page-link" href="patientManager?p=${requestParam_p + 1}" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>`;
+    //     }
+    //     $('#page_navbtn').append(next);
+    // }
+    // else {
+    //     if (data1.doctors_count === 0) {
+    //         const modal = new Modal($('#noticeModal'));
+    //         modal.show();
+    //     }
+    //     if (requestParam_p ===  1) {
+    //         previous = '<li class="page-item"><a class="page-link" href="" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>';
+    //     }
+    //     else {
+    //         previous = `<li class="page-item"><a class="page-link" href="patientManager?p=${requestParam_p - 1}&keyword=${requestParam_keyword}" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>`
+    //     }
+    //     $('#page_navbtn').append(previous);
+    //     for (let j = 1; j <= data1.pages_count; j++) {
+    //         let navbtn2 = `<li class="page-item"><a class="page-link" href="patientManager?p=${j}&keyword=${requestParam_keyword}">${j}</a></li>`;
+    //         $('#page_navbtn').append(navbtn2);
+    //     }
+    //     if (requestParam_p === data1.pages_count) {
+    //         next = '<li class="page-item"><a class="page-link" href="" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>';
+    //     }
+    //     else {
+    //         next = `<li class="page-item"><a class="page-link" href="patientManager?p=${requestParam_p + 1}&keyword=${requestParam_keyword}" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>`;
+    //     }
+    //     $('#page_navbtn').append(next);
+    //}
 });
 </script>
 
@@ -156,6 +154,7 @@ onMounted(async () => {
                     <th>姓名</th>
                     <th>性别</th>
                     <th>出生日期</th>
+                    <th>联系电话</th>
                     <th>登录密码</th>
                     <th>操作</th>
                 </tr>
@@ -167,6 +166,7 @@ onMounted(async () => {
                     <td>{{patient.patient_name}}</td>
                     <td>{{patient.patient_sex}}</td>
                     <td>{{patient.patient_birthdate}}</td>
+                    <td>{{patient.patient_phone}}</td>
                     <td>{{patient.patient_password}}</td>
                     <td>
                         <input type="button" @click="resetPassword(patient.patient_id, patient.patient_name)" class="btn btn-primary btn-block" style="margin: 0 3px 0 3px" value="重置登录密码" />
@@ -179,7 +179,25 @@ onMounted(async () => {
             <div class="input-group mt-3">
                 <nav aria-label="Page navigation example">
                     <ul class="pagination" id="page_navbtn">
+                        <ul v-if="requestParam_keyword === null || requestParam_keyword === undefined || requestParam_keyword === ''" class="pagination" id="page_navbtn">
+                            <li v-if="requestParam_p ===  1" class="page-item"><a class="page-link" href="" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>
+                            <li v-else class="page-item"><a class="page-link" :href="'patientManager?p=' + (requestParam_p - 1)" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>
 
+                            <li v-for="i in data1.pages_count" :key="i" class="page-item"><a class="page-link" :href="'patientManager?p=' + i">{{i}}</a></li>
+
+                            <li v-if="requestParam_p === data1.pages_count" class="page-item"><a class="page-link" href="" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>
+                            <li v-else class="page-item"><a class="page-link" :href="'patientManager?p=' + (requestParam_p + 1)" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>
+                        </ul>
+                        <ul v-else class="pagination" id="page_navbtn">
+                            <li v-if="requestParam_p ===  1" class="page-item"><a class="page-link" href="" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>
+                            <li v-else class="page-item"><a class="page-link" :href="'patientManager?p=' + requestParam_keyword + '&keyword=' + requestParam_keyword" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>
+
+                            <li v-for="i in data1.pages_count" :key="i" class="page-item"><a class="page-link" :href="'patientManager?p=' + i + '&keyword=' + requestParam_keyword">{{i}}</a></li>
+
+                            <li v-if="requestParam_p === data1.pages_count" class="page-item"><a class="page-link" href="" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>
+                            <li v-else class="page-item"><a class="page-link" :href="'patientManager?p=' + (requestParam_p + 1) + '&keyword=' + requestParam_keyword" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>
+
+                        </ul>
                     </ul>
                 </nav>
             </div>

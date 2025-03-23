@@ -85,7 +85,7 @@ const handleSubmit = async () => {
 
                     <div class="input-group mb-3">
                         <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
-                        <input type="password" class="form-control" v-model="formData.patient_password" placeholder="登录密码"/>
+                        <input type="password" class="form-control" v-model="formData.patient_password" placeholder="登录密码" maxlength="20"/>
                     </div>
 
                     <div class="input-group mb-3">

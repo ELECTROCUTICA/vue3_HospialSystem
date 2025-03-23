@@ -9,6 +9,10 @@ const formData = reactive({
 });
 
 onMounted(async () => {
+    if (localStorage.getItem('jwt_patient')) {
+        window.location.href = '/patient/home';
+    }
+
     document.querySelector("body").setAttribute("style", "background-color: #20c997");
 });
 
@@ -34,6 +38,8 @@ const loginSubmit = async () => {
         console.log(error);
     });
 }
+
+
 </script>
 
 <template>

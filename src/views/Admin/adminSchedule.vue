@@ -6,7 +6,8 @@ import $ from 'jquery';
 import config from "@/config/config";
 
 const data1 = reactive({
-    dates: [],
+    dates1: [],
+    dates2: [],
     departments: [],
     noons: []
 });
@@ -63,8 +64,6 @@ async function refreshTable() {
             },
         });
         response.work_doctors = resp2.data;
-
-        console.log(resp2.data);
     }
 }
 
@@ -262,7 +261,8 @@ onMounted(async () => {
         url: `${config.spring_cloud_gateway_url}leader/admin/getSchedule`,
         method: 'get'
     });
-    data1.dates = response.data.dates;
+    data1.dates1 = response.data.dates1
+    data1.dates2 = response.data.dates2;
     data1.departments = response.data.departments;
     data1.noons = response.data.noons;
     current_time.value = new Date(response.data.now);
@@ -330,7 +330,7 @@ onBeforeUnmount(() => {
 
                         <div class="input-group mb-3">
                             <span class="input-group-text">号源数量</span>
-                            <input type="text" class="form-control" placeholder="请输入号源数量" v-model="submitScheduleFormData.init_register_count">
+                            <input type="number" class="form-control" placeholder="请输入号源数量" v-model="submitScheduleFormData.init_register_count" min="0" max="999">
                         </div>
 
                         <div class="modal-footer">
@@ -347,7 +347,13 @@ onBeforeUnmount(() => {
         <h2 class="mt-3 mb-3" style="font-family: 'Microsoft YaHei UI',serif">服务器时间：{{current_time_text.value}}</h2>
         <div id="frame" class="mt-3">
             <ul class="list-group list-group-horizontal">
-                <li v-for="(DateJSON, index) in data1.dates" :key="index" class="list-group-item list-group-item-action p-2">
+                <li v-for="(DateJSON, index) in data1.dates1" :key="index" class="list-group-item list-group-item-action p-2">
+                    <button @click="chooseDate(DateJSON.dateParam, DateJSON.dateText); refreshTable(); setButtonActive(index)"
+                            class="btn btn-block" :class="{'btn-primary' : activeButton === index, 'btn-outline-primary': activeButton !== index}">{{DateJSON.dateText}}</button>
+                </li>
+            </ul>
+            <ul class="list-group list-group-horizontal">
+                <li v-for="(DateJSON, index) in data1.dates2" :key="index" class="list-group-item list-group-item-action p-2">
                     <button @click="chooseDate(DateJSON.dateParam, DateJSON.dateText); refreshTable(); setButtonActive(index)"
                             class="btn btn-block" :class="{'btn-primary' : activeButton === index, 'btn-outline-primary': activeButton !== index}">{{DateJSON.dateText}}</button>
                 </li>
@@ -410,7 +416,7 @@ onBeforeUnmount(() => {
                     </div>
                     <div v-else>
                         <ul class="list-group" id="list2">
-                            <li v-for="(ds, key) in response.work_doctors" :key="key" class="list-group-item list-group-item-action">{{ds.doctor_id}} {{ds.doctor_name}} {{ds.dep_name}} {{ds.title_name}} 余号:{{ds.remain_register_count + ds.append_register_count}}
+                            <li v-for="(ds, key) in response.work_doctors" :key="key" class="list-group-item list-group-item-action">{{ds.doctor_id}} {{ds.doctor_name}} {{ds.dep_name}} {{ds.title_name}} 余号:{{ds.remain_register_count}}
                                 <button @click="cancelArrangement(ds)" class="btn btn-danger btn-block float-end"><span class="bi bi-x-lg"></span></button>
                             </li>
                         </ul>

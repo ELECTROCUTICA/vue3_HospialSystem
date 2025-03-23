@@ -1,11 +1,16 @@
 <script setup>
-import { reactive, onMounted} from 'vue'
+import {reactive, onMounted} from 'vue'
 import axios from 'axios'
 import config from "@/config/config";
 
 const data1 = reactive({
     registrations: []
 });
+
+const request = reactive({
+    keyword: '',
+});
+
 
 onMounted(async () => {
     await axios({
@@ -17,6 +22,21 @@ onMounted(async () => {
         console.log(error);
     });
 });
+
+const searchRegistration = async () => {
+    if (request.keyword === '') return;
+    await axios({
+        url: `${config.spring_cloud_gateway_url}worker/doctor/searchRegistration`,
+        method: 'get',
+        params: {
+            keyword: request.keyword
+        }
+    }).then(response => {
+        data1.registrations = response.data;
+    }).catch(error => {
+        console.log(error);
+    });
+}
 
 function changingStatus(register_id, status) {
     let alertmessage;
@@ -68,19 +88,29 @@ const complement = (value) => {                     //用于当分钟、秒小�
 
             <div class="col-8" id="content">
 
+
+                <form @submit.prevent="searchRegistration" class="mb-4" >
+                    <div class="input-group mt-3">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input type="text" class="form-control col-8" placeholder="输入患者姓名/姓名拼音码以查询患者挂号..." v-model="request.keyword"/>
+                        <input type="submit" class="btn btn-outline-success my-2 my-sm-0 col-3" value="搜索"/>
+                    </div>
+                </form>
+
+
                 <table class="table table-bordered">
 
                     <thead>
                     <tr>
                         <th>序号</th>
                         <th>就诊号</th>
+                        <th>就诊时间</th>
                         <th>当日号</th>
                         <th>患者姓名</th>
                         <th>患者身份证号码</th>
                         <th>患者性别</th>
                         <th>患者年龄</th>
                         <th>负责医生</th>
-                        <th>就诊时间</th>
                         <th>就诊状态</th>
                         <th>操作</th>
                     </tr>
@@ -90,13 +120,13 @@ const complement = (value) => {                     //用于当分钟、秒小�
                         <tr v-for="(registration, key) in data1.registrations" :key="key">
                             <td>{{key + 1}}</td>
                             <td>{{registration.register_id}}</td>
+                            <td>{{registration.visit_date}} {{registration.begin_time_hour}}:{{complement(registration.begin_time_minute)}}-{{registration.end_time_hour}}:{{complement(registration.end_time_minute)}}</td>
                             <td>{{registration.serial_id}}</td>
                             <td>{{registration.patient_name}}</td>
                             <td>{{registration.patient_id}}</td>
                             <td>{{registration.patient_sex}}</td>
                             <td>{{registration.patient_age}}</td>
                             <td>{{registration.doctor_name}}</td>
-                            <td>{{registration.visit_date}} {{registration.begin_time_hour}}:{{complement(registration.begin_time_minute)}}-{{registration.end_time_hour}}:{{complement(registration.end_time_minute)}}</td>
                             <td>
                                 <span v-if="registration.registration_status === -1">
                                     <span>医生取消</span>

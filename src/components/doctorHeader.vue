@@ -1,16 +1,17 @@
 <script setup>
-import { reactive, onMounted } from "vue"
+import {reactive, onMounted} from "vue"
 import axios from "axios"
 import config from "@/config/config";
 
 const doctor = reactive({
-    doctor_id: null,
+    doctor_id: 0,
     doctor_name: '',
-    dep_no: null,
+    dep_no: 0,
     dep_name: '',
     title_no: -1,
     title_name: ''
 });
+
 
 onMounted(async () => {
     await axios({
@@ -26,6 +27,10 @@ onMounted(async () => {
     }).catch(error => {
         console.log(error);
     });
+
+    if (doctor.doctor_id === undefined || doctor.doctor_id === null || doctor.doctor_id === 0 ) {
+        window.location.href = '/doctor/login';
+    }
 });
 
 </script>

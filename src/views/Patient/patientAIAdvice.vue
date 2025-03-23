@@ -27,6 +27,7 @@ const recommendation = reactive({
 });
 
 const submitRegistrationFormData = reactive({
+    schedule_id: 0,
     doctor_id: 0,
     date: '',
     noon_id: ''
@@ -99,6 +100,7 @@ const startTypingEffect = () => {
 };
 
 const showConfirmRegisterModal = (r) => {
+    submitRegistrationFormData.schedule_id = r.schedule_id;
     submitRegistrationFormData.doctor_id = r.doctor_id;
     submitRegistrationFormData.date = r.work_date;
     submitRegistrationFormData.noon_id = r.noon_id;
@@ -114,18 +116,14 @@ const submitRegistration = async () => {
             "Content-Type": "application/x-www-form-urlencoded"
         },
         data: {
+            schedule_id: submitRegistrationFormData.schedule_id,
             doctor_id: submitRegistrationFormData.doctor_id,
             date: submitRegistrationFormData.date,
             noon_id: submitRegistrationFormData.noon_id
         }
     }).then((response) => {
-        if (response.data.status === 'ok') {
-            alert(response.data.message);
-            $('#closeConfirmRegisterModal').click();
-        }
-        else {
-            alert(response.data.message);
-        }
+        alert(response.data.message);
+        $('#closeConfirmRegisterModal').click();
     });
 };
 
@@ -152,6 +150,10 @@ onUnmounted(() => {
 
                 <div class="modal-body">
                     <form @submit.prevent="submitRegistration">
+                        <div class="input-group mb-3 visually-hidden">
+                            <span class="input-group-text">schedule_id</span>
+                            <input type="text" class="form-control" disabled v-model="submitRegistrationFormData.schedule_id" />
+                        </div>
                         <div class="input-group mb-3 visually-hidden">
                             <span class="input-group-text">doctor_id</span>
                             <input type="text" class="form-control" disabled v-model="submitRegistrationFormData.doctor_id">

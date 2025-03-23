@@ -121,8 +121,8 @@ onMounted(async () => {
                         <div class="input-group mb-3">
                             <span class="input-group-text">职称有效性</span>
                             <select class="form-select form-control" v-model="insertTitleFormData.valid_flag">
-                                <option value="1">有效</option>
-                                <option value="0">无效</option>
+                                <option :value="1">有效</option>
+                                <option :value="0">无效</option>
                             </select>
                         </div>
 

@@ -11,9 +11,9 @@ if (isNaN(requestParam_p)) requestParam_p = 1;            //地址中的p参数
 const data1 = reactive({
     all_departments: [],
     departments: [],
-    departments_count: -1,
-    pages_count: -1,
-    current: -1,
+    departments_count: 0,
+    pages_count: 0,
+    current: 0,
 });
 
 const updateDepartmentModalFormData = reactive({
@@ -169,6 +169,7 @@ function clickDisplayDoctorsOfDepartment(dep_no, dep_name) {
 }
 
 onMounted(async () => {
+    if (requestParam_p <= 0) window.location.href = '/admin/departments?p=1';
     const data1Response = await axios({
         url: `${config.spring_cloud_gateway_url}leader/admin/departments`,
         method: 'get',
@@ -182,27 +183,8 @@ onMounted(async () => {
     data1.pages_count = data1Response.data.pages_count;
     data1.current = data1Response.data.current;
 
+    if (requestParam_p > data1.pages_count) window.location.href = '/admin/departments?p=1';
 
-    let previous;
-    let next;
-    if (requestParam_p ===  1) {
-        previous = '<li class="page-item"><a class="page-link" href="" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>';
-    }
-    else {
-        previous = `<li class="page-item"><a class="page-link" href="departments?p=${requestParam_p - 1}" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>`;
-    }
-    $('#page_navbtn').append(previous);
-    for (let i = 1; i <= data1.pages_count; i++) {
-        let navbtn1 = `<li class="page-item"><a class="page-link" href="departments?p=${i}">${i}</a></li>`;
-        $('#page_navbtn').append(navbtn1);
-    }
-    if (requestParam_p === data1.pages_count) {
-        next = '<li class="page-item"><a class="page-link" href="" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>';
-    }
-    else {
-        next = `<li class="page-item"><a class="page-link" href="departments?p=${requestParam_p + 1}" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>`;
-    }
-    $('#page_navbtn').append(next);
 });
 
 </script>
@@ -236,8 +218,8 @@ onMounted(async () => {
                         <div class="input-group mb-3">
                             <span class="input-group-text">科室有效性</span>
                             <select class="form-select form-control" v-model="updateDepartmentModalFormData.valid_flag">
-                                <option value="1">有效</option>
-                                <option value="0">无效</option>
+                                <option :value="1">有效</option>
+                                <option :value="0">无效</option>
                             </select>
                         </div>
 
@@ -290,8 +272,8 @@ onMounted(async () => {
                         <div class="input-group mb-3">
                             <span class="input-group-text">科室有效性</span>
                             <select class="form-select form-control" v-model="insertDepartmentModalFormData.valid_flag">
-                                <option value="1">有效</option>
-                                <option value="0">无效</option>
+                                <option :value="1">有效</option>
+                                <option :value="0">无效</option>
                             </select>
                         </div>
 
@@ -348,7 +330,7 @@ onMounted(async () => {
                         <div class="input-group mb-3">
                             <span class="input-group-text">源科室</span>
                             <select class="form-select" v-model="transferModalSubmit.source">
-                                <option value="-1">请选择...</option>
+                                <option :value="-1">请选择...</option>
                                 <option v-for="(department, key) in data1.all_departments" :key="key" :value="department.dep_no">{{department.dep_no}} {{department.dep_name}} </option>
                             </select>
                         </div>
@@ -356,7 +338,7 @@ onMounted(async () => {
                         <div class="input-group mb-3">
                             <span class="input-group-text">目标科室</span>
                             <select class="form-select" v-model="transferModalSubmit.target">
-                                <option value="-1">请选择...</option>
+                                <option :value="-1">请选择...</option>
                                 <option v-for="(department, key) in data1.all_departments" :key="key" :value="department.dep_no">{{department.dep_no}} {{department.dep_name}}</option>
                             </select>
                         </div>
@@ -402,7 +384,7 @@ onMounted(async () => {
                 </thead>
                 <tbody id="list">
                     <tr v-for="(department, key) in data1.departments" :key="key">
-                        <td class="align-content-center">{{(requestParam_p - 1) * 10 + key + 1}}</td>
+                        <td class="align-content-center">{{(requestParam_p - 1) * config.admin_data_count_per_page + key + 1}}</td>
                         <td class="align-content-center">{{department.dep_no}}</td>
                         <td class="align-content-center">{{department.dep_name}}</td>
                         <td class="align-content-center">{{department.create_time}}</td>
@@ -419,7 +401,13 @@ onMounted(async () => {
             <div class="input-group mt-3">
                 <nav aria-label="Page navigation example">
                     <ul class="pagination" id="page_navbtn">
+                        <li v-if="requestParam_p ===  1" class="page-item"><a class="page-link" href="" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>
+                        <li v-else class="page-item"><a class="page-link" :href="'departments?p=' + (requestParam_p - 1)" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>
 
+                        <li v-for="i in data1.pages_count" :key="i" class="page-item"><a class="page-link" :href="'departments?p=' + i">{{i}}</a></li>
+
+                        <li v-if="requestParam_p === data1.pages_count" class="page-item"><a class="page-link" href="" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>
+                        <li v-else class="page-item"><a class="page-link" :href="'departments?p=' + (requestParam_p + 1)" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>
                     </ul>
                 </nav>
             </div>

@@ -3,8 +3,21 @@ import { reactive, onMounted } from "vue";
 import axios from 'axios';
 import config from "@/config/config";
 
+
 onMounted(async () => {
     document.querySelector("body").setAttribute("style", "background-color: #0dcaf0");
+
+    await axios({
+        url: `${config.spring_cloud_gateway_url}worker/doctor/getDoctor`,
+        method: 'get'
+    }).then(response => {
+        if (response.data.doctor_id !== null && response.data.doctor_id !== undefined && response.data.doctor_id !== 0) {
+            window.location.href = '/doctor/list';
+        }
+    }).catch(error => {
+        console.log(error);
+    });
+
 });
 
 const formData = reactive({
@@ -48,7 +61,7 @@ const loginSubmit = async () => {
                 <form @submit.prevent="loginSubmit" style="text-align: center">
                     <div class="input-group mb-3">
                         <span class="input-group-text"><i class="bi bi-person-vcard"></i></span>
-                        <input type="number" class="form-control" placeholder="职工号" v-model="formData.doctor_id"/>
+                        <input type="number" class="form-control" placeholder="职工号" v-model="formData.doctor_id" maxlength="10" oninput="this.value = this.value.slice(0, this.maxLength);"/>
                     </div>
 
                     <div class="input-group mb-3">
