@@ -10,6 +10,9 @@ const data1 = reactive({
     registrations: []
 });
 
+const complement = (value) => {                     //用于当分钟、秒小于10时，补上十位数的0
+    return value < 10 ? `0${value}` : value.toString()
+}
 
 onMounted(async () => {
     const responseTime = await axios({
@@ -66,7 +69,7 @@ onMounted(async () => {
                         <ul class="list-group">
                             <li v-for="(registration, key) in data1.registrations" :key="key" class="list-group-item list-group-item-action">
                             <span>当日号:{{registration.serial_id}} {{registration.dep_name}} {{registration.doctor_name}} {{registration.title_name}}
-                                {{registration.begin_time_hour}}:{{registration.begin_time_minute}}-{{registration.end_time_hour}}:{{registration.end_time_minute}}</span>
+                                {{registration.begin_time_hour}}:{{complement(registration.begin_time_minute)}}-{{registration.end_time_hour}}:{{complement(registration.end_time_minute)}}</span>
                             </li>
                         </ul>
                     </div>

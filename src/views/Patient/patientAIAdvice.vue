@@ -57,7 +57,7 @@ const submitMessage = async () => {
         }
     });
     reply.value = response.data.message;
-    //console.log(response.data);
+    //console.log(response.data.message);
     recommendation.data_count = response.data.data_count;
     if (recommendation.data_count > 0) {
         recommendation.schedule_id = response.data.recommendation.schedule_id;

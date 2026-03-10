@@ -280,7 +280,7 @@ const complement = (value) => {                     //用于当分钟、秒小�
                     <td class="align-content-center">{{noon.noon_id}}</td>
                     <td class="align-content-center">{{noon.noon_name}}</td>
                     <td class="align-content-center">{{noon.begin_time_hour}}:{{complement(noon.begin_time_minute)}}</td>
-                    <td class="align-content-center">{{noon.end_time_hour}}:{{noon.end_time_minute}}</td>
+                    <td class="align-content-center">{{noon.end_time_hour}}:{{complement(noon.end_time_minute)}}</td>
                     <td class="align-content-center">{{noon.noon_memo}}</td>
                     <td class="align-content-center" v-if="noon.valid_flag === 1">是</td>
                     <td class="align-content-center" v-else>否</td>

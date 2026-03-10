@@ -3,6 +3,7 @@ import {reactive, onMounted} from 'vue';
 import axios from 'axios';
 import { useRoute } from 'vue-router';
 import $ from 'jquery';
+import {Modal} from 'bootstrap';
 import config from "@/config/config";
 
 let requestParam_p = Number(useRoute().query.p);
@@ -25,6 +26,7 @@ const data1 = reactive({
 });
 
 const updateDoctorModalFormData = reactive({
+    modal_title: '',
     doctor_id: -1,
     doctor_name: '',
     doctor_sex: '',
@@ -66,53 +68,10 @@ onMounted(async () => {
 
     if (requestParam_p > data1.pages_count) window.location.href = '/admin/doctorinfo?p=1';
 
-    // let previous;
-    // let next;
-    // if (requestParam_keyword === null || requestParam_keyword === undefined || requestParam_keyword === '') {
-    //     if (requestParam_p ===  1) {
-    //         previous = '<li class="page-item"><a class="page-link" href="" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>';
-    //     }
-    //     else {
-    //         previous = `<li class="page-item"><a class="page-link" href="doctorinfo?p=${requestParam_p - 1}" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>`;
-    //     }
-    //     $('#page_navbtn').append(previous);
-    //     for (let i = 1; i <= data1.pages_count; i++) {
-    //         let navbtn1 = `<li class="page-item"><a class="page-link" href="doctorinfo?p=${i}">${i}</a></li>`;
-    //         $('#page_navbtn').append(navbtn1);
-    //     }
-    //     if (requestParam_p === data1.pages_count) {
-    //         next = '<li class="page-item"><a class="page-link" href="" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>';
-    //     }
-    //     else {
-    //         next = `<li class="page-item"><a class="page-link" href="doctorinfo?p=${requestParam_p + 1}" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>`;
-    //     }
-    //     $('#page_navbtn').append(next);
-    // }
-    // else {
-    //     if (data1.doctors_count === 0) {
-    //         const modal = new Modal($('#noticeModal'));
-    //         modal.show();
-    //     }
-    //     if (requestParam_p ===  1) {
-    //         previous = '<li class="page-item"><a class="page-link" href="" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>';
-    //     }
-    //     else {
-    //         previous = `<li class="page-item"><a class="page-link" href="doctorinfo?p=${requestParam_p - 1}&keyword=${requestParam_keyword}" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>`;
-    //     }
-    //     $('#page_navbtn').append(previous);
-    //     for (let j = 1; j <= data1.pages_count; j++) {
-    //         let navbtn2 = `<li class="page-item"><a class="page-link" href="doctorinfo?p=${j}&keyword=${requestParam_keyword}">${j}</a></li>`;
-    //         $('#page_navbtn').append(navbtn2);
-    //     }
-    //     if (requestParam_p === data1.pages_count) {
-    //         next = '<li class="page-item"><a class="page-link" href="" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>';
-    //     }
-    //     else {
-    //         next = `<li class="page-item"><a class="page-link" href="doctorinfo?p=${requestParam_p + 1}&keyword=${requestParam_keyword}" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>`;
-    //     }
-    //     $('#page_navbtn').append(next);
-    // }
-
+    if (data1.doctors_count === 0) {
+        const modal = new Modal($('#noticeModal'));
+        modal.show();
+    }
 });
 
 //点击更新某个医生的信息按钮时，修改模态框中的信息
@@ -158,8 +117,10 @@ function submitUpdate() {
         }
     }).then(response => {
         alert(response.data.message);
-        $('#closeUpdateDoctorModal').click();
-        window.location.reload();
+        if (response.data.status === 'ok') {
+            $('#closeUpdateDoctorModal').click();
+            window.location.reload();
+        }
     }).catch(error => {
         console.log(error);
     });
@@ -212,7 +173,7 @@ function search() {
                     <p id="msg">没有查找到数据</p>
                 </div>
                 <div class="modal-footer">
-                    <input type="button" class="btn btn-primary" name="cancel" data-bs-dismiss="modal" value="确定"/>
+                    <input type="button" class="btn btn-danger" name="cancel" data-bs-dismiss="modal" value="确定"/>
                 </div>
             </div>
         </div>
@@ -223,7 +184,7 @@ function search() {
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">修改医生信息</h4>
+                    <h4 class="modal-title">修改医生信息 {{updateDoctorModalFormData.modal_title}}</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 

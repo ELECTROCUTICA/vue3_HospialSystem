@@ -3,6 +3,8 @@ import { reactive, onMounted } from 'vue';
 import axios from 'axios';
 import { useRoute } from 'vue-router';
 import config from "@/config/config";
+import {Modal} from "bootstrap";
+import $ from "jquery";
 
 let requestParam_p = Number(useRoute().query.p);
 if (isNaN(requestParam_p)) requestParam_p = 1;            //地址中的p参数
@@ -44,6 +46,7 @@ function resetPassword(patient_id, patient_name) {
 }
 
 onMounted(async () => {
+    if (requestParam_p <= 0) window.location.href = '/admin/patientManager?p=1';
     const data1Response = await axios({
         url: `${config.spring_cloud_gateway_url}leader/admin/patientManager`,
         method: 'get',
@@ -55,54 +58,13 @@ onMounted(async () => {
     data1.patients = data1Response.data.patients;
     data1.current = data1Response.data.current;
     data1.pages_count = data1Response.data.pages_count;
-    data1.doctors_count = data1Response.data.patients_count
-    //
-    // let previous;
-    // let next;
-    // if (requestParam_keyword === null || requestParam_keyword === undefined || requestParam_keyword === '') {
-    //     if (requestParam_p ===  1) {
-    //         previous = '<li class="page-item"><a class="page-link" href="" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>';
-    //     }
-    //     else {
-    //         previous = `<li class="page-item"><a class="page-link" href="patientManager?p=${requestParam_p - 1}" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>`;
-    //     }
-    //     $('#page_navbtn').append(previous);
-    //     for (let i = 1; i <= data1.pages_count; i++) {
-    //         let navbtn1 = `<li class="page-item"><a class="page-link" href="patientManager?p=${i}">${i}</a></li>`;
-    //         $('#page_navbtn').append(navbtn1);
-    //     }
-    //     if (requestParam_p === data1.pages_count) {
-    //         next = '<li class="page-item"><a class="page-link" href="" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>';
-    //     }
-    //     else {
-    //         next = `<li class="page-item"><a class="page-link" href="patientManager?p=${requestParam_p + 1}" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>`;
-    //     }
-    //     $('#page_navbtn').append(next);
-    // }
-    // else {
-    //     if (data1.doctors_count === 0) {
-    //         const modal = new Modal($('#noticeModal'));
-    //         modal.show();
-    //     }
-    //     if (requestParam_p ===  1) {
-    //         previous = '<li class="page-item"><a class="page-link" href="" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>';
-    //     }
-    //     else {
-    //         previous = `<li class="page-item"><a class="page-link" href="patientManager?p=${requestParam_p - 1}&keyword=${requestParam_keyword}" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>`
-    //     }
-    //     $('#page_navbtn').append(previous);
-    //     for (let j = 1; j <= data1.pages_count; j++) {
-    //         let navbtn2 = `<li class="page-item"><a class="page-link" href="patientManager?p=${j}&keyword=${requestParam_keyword}">${j}</a></li>`;
-    //         $('#page_navbtn').append(navbtn2);
-    //     }
-    //     if (requestParam_p === data1.pages_count) {
-    //         next = '<li class="page-item"><a class="page-link" href="" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>';
-    //     }
-    //     else {
-    //         next = `<li class="page-item"><a class="page-link" href="patientManager?p=${requestParam_p + 1}&keyword=${requestParam_keyword}" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>`;
-    //     }
-    //     $('#page_navbtn').append(next);
-    //}
+    data1.patients_count = data1Response.data.patients_count
+
+    if (requestParam_p > data1.pages_count) window.location.href = '/admin/patientManager?p=1';
+    if (data1.patients_count === 0) {
+        const modal = new Modal($('#noticeModal'));
+        modal.show();
+    }
 });
 </script>
 
@@ -120,7 +82,7 @@ onMounted(async () => {
                     <p id="msg">没有查找到数据</p>
                 </div>
                 <div class="modal-footer">
-                    <input type="button" class="btn btn-primary" name="cancel" data-bs-dismiss="modal" value="确定"/>
+                    <input type="button" class="btn btn-danger" name="cancel" data-bs-dismiss="modal" value="确定"/>
                 </div>
             </div>
         </div>
@@ -142,6 +104,7 @@ onMounted(async () => {
                     <li class="list-group-item">
                         <a href="/admin/patientManager"><input type="button" class="btn btn-warning btn-block" value="查看所有用户"/></a>
                     </li>
+                    <li class="list-group-item">查找到{{data1.patients_count}}条结果</li>
                 </ul>
             </div>
         </div>

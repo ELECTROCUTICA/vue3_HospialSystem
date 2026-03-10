@@ -25,11 +25,16 @@ onMounted(async () => {
         url: `${config.spring_cloud_gateway_url}app/patient/getPatient`,
         method: 'get'
     }).then(response => {
-        patient.patient_id = response.data.patient_id;
-        patient.patient_name = response.data.patient_name;
-        patient.patient_sex = response.data.patient_sex;
-        patient.patient_birthdate = response.data.patient_birthdate;
-        patient.patient_age = response.data.patient_age;
+        if (response.data.patient_id === "invalid") {
+            localStorage.removeItem('jwt_patient');
+        }
+        else {
+            patient.patient_id = response.data.patient_id;
+            patient.patient_name = response.data.patient_name;
+            patient.patient_sex = response.data.patient_sex;
+            patient.patient_birthdate = response.data.patient_birthdate;
+            patient.patient_age = response.data.patient_age;
+        }
     }).catch(error => {
         console.log(error);
     });

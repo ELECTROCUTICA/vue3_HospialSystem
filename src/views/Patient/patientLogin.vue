@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, onMounted } from 'vue';
+import {reactive, onMounted, onBeforeMount} from 'vue';
 import axios from 'axios';
 import config from "@/config/config";
 
@@ -8,11 +8,13 @@ const formData = reactive({
     patient_password: '',
 });
 
-onMounted(async () => {
-    if (localStorage.getItem('jwt_patient')) {
+onBeforeMount(() => {
+    if (localStorage.getItem('jwt_patient') !== undefined && localStorage.getItem('jwt_patient') !== null) {
         window.location.href = '/patient/home';
     }
+});
 
+onMounted(async () => {
     document.querySelector("body").setAttribute("style", "background-color: #20c997");
 });
 

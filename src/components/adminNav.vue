@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, onMounted } from "vue";
+import { reactive, onBeforeMount } from "vue";
 import axios from 'axios';
 import config from "@/config/config";
 
@@ -13,7 +13,7 @@ function confirmLogout() {
     }
 }
 
-onMounted(async () => {
+onBeforeMount(async () => {
     await axios({
         url: `${config.spring_cloud_gateway_url}leader/admin/getAdmin`,
         method: 'get',
@@ -23,10 +23,26 @@ onMounted(async () => {
         console.log(error);
     });
 
+
     if (admin.id === undefined || admin.id === null || admin.id === '') {
         window.location.href = '/admin/login';
     }
 });
+
+// onMounted(async () => {
+//     await axios({
+//         url: `${config.spring_cloud_gateway_url}leader/admin/getAdmin`,
+//         method: 'get',
+//     }).then(response => {
+//         admin.id = response.data.id;
+//     }).catch(error => {
+//         console.log(error);
+//     });
+//
+//     if (admin.id === undefined || admin.id === null || admin.id === '') {
+//         window.location.href = '/admin/login';
+//     }
+// });
 
 
 </script>

@@ -78,65 +78,6 @@ function chooseDate(dateParam, dateText) {
 }
 
 
-
-//旧代码 用于刷新医生列表
-// function flush() {
-//     $('#list1').empty();
-//     $('#list2').empty();
-//     if (request.selectedDep === -1 || request.selectedNoon === -1) {
-//         return;
-//     }
-//
-//     axios({
-//         url: 'http://localhost:7777/leader/admin/schedule/getDoctorsWork',
-//         method: 'get',
-//         params: {
-//             dep_no: request.selectedDep,
-//             date: request.selectedDate,
-//             noon_id: request.selectedNoon,
-//         },
-//     }).then(response => {
-//         let workDoctors = response.data;
-//         if (workDoctors.length === 0) {
-//             $('#list2').append('无医生已被安排工作');
-//         }
-//         else {
-//             $.each(workDoctors, function(i, doctor) {
-//                 let row = `<li class="list-group-item list-group-item-action">${doctor.doctor_id} ${doctor.doctor_name} ${doctor.doctor_name} ${doctor.dep_name} ${doctor.title_name}
-//                 <button class="btn btn-danger btn-block float-end" onclick="cancelArrangement(${doctor.doctor_id}, '${doctor.doctor_name}', '${request.selectedDate}', ${request.selectedNoon})">取消安排</button></li>`;
-//                 $('#list2').append(row);
-//             });
-//         }
-//     }).catch(error => {
-//         console.log(error);
-//     });
-//
-//     // 无工作安排医生
-//     axios({
-//         url: 'http://localhost:7777/leader/admin/schedule/getDoctorsNoWork',
-//         method: 'get',
-//         params: {
-//             dep_no: request.selectedDep,
-//             date: request.selectedDate,
-//             noon_id: request.selectedNoon
-//         },
-//     }).then(response => {
-//         let noWorkDoctors = response.data;
-//         if (noWorkDoctors.length === 0) {
-//             $('#list1').append('无医生未被安排工作');
-//         }
-//         else {
-//             $.each(noWorkDoctors, function(i, doctor) {
-//                 let row = `<li class="list-group-item list-group-item-action">${doctor.doctor_id} ${doctor.doctor_name} ${doctor.dep_name} ${doctor.title_name}
-//                 <button class="btn btn-primary btn-block float-end" onclick="arrangeGoToWork(${doctor.doctor_id}, '${request.selectedDate}', ${request.selectedNoon})" data-bs-toggle="modal" data-bs-target="#arrangeGoToWorkModal">安排工作</button></li>`;
-//                 $('#list1').append(row);
-//             });
-//         }
-//     }).catch(error => {
-//         console.log(error);
-//     });
-// }
-
 //点击安排工作后弹出的模态框信息填充方法
 async function arrangeGoToWork(doctor_id, work_date, noon_id) {
     await axios({
@@ -307,7 +248,6 @@ onBeforeUnmount(() => {
                             <span class="input-group-text">医生职称</span>
                             <input type="text" class="form-control" disabled v-model="submitScheduleFormData.title_name">
                         </div>
-
 
                         <div class="input-group mb-3">
                             <span class="input-group-text">排班科室</span>

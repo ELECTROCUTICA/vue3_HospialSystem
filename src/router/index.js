@@ -275,7 +275,7 @@ router.beforeEach(async (to, from, next) => {
 
   if (to.matched.some(record => record.meta.requiresAuth)) {
     const token = localStorage.getItem("jwt_patient");
-    if (!token) {
+    if (!token || token === '') {
       next({name: 'PatientLogin'});
     }
     else {

@@ -21,6 +21,6 @@ app.component('doctorNav', doctorNav);
 
 
 app.use(router).mount('#app')
-axios.defaults.baseURL = "http://localhost:8081"
+//axios.defaults.baseURL = "http://localhost:8081"
 axios.defaults.withCredentials = true
 

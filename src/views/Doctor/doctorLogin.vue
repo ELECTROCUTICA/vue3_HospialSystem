@@ -1,12 +1,9 @@
 <script setup>
-import { reactive, onMounted } from "vue";
+import {reactive, onMounted, onBeforeMount} from "vue";
 import axios from 'axios';
 import config from "@/config/config";
 
-
-onMounted(async () => {
-    document.querySelector("body").setAttribute("style", "background-color: #0dcaf0");
-
+onBeforeMount(async () => {
     await axios({
         url: `${config.spring_cloud_gateway_url}worker/doctor/getDoctor`,
         method: 'get'
@@ -17,7 +14,10 @@ onMounted(async () => {
     }).catch(error => {
         console.log(error);
     });
+});
 
+onMounted(async () => {
+    document.querySelector("body").setAttribute("style", "background-color: #0dcaf0");
 });
 
 const formData = reactive({

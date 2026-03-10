@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, onMounted } from "vue";
+import {reactive, onMounted, onBeforeMount} from "vue";
 import axios from 'axios';
 import config from "@/config/config";
 
@@ -8,8 +8,7 @@ const formData = reactive({
     password: '',
 })
 
-
-onMounted(async () => {
+onBeforeMount(async () => {
     await axios({
         url: `${config.spring_cloud_gateway_url}leader/admin/getAdmin`,
         method: 'get',
@@ -20,7 +19,9 @@ onMounted(async () => {
     }).catch(error => {
         console.log(error);
     });
+});
 
+onMounted(async () => {
     //document.querySelector("body").setAttribute("style", "background-color: #5c636a");
     document.querySelector("body").setAttribute("style", "background-image: url(\"https://pic1.imgdb.cn/item/67cc43b2066befcec6e15df6.jpg\"); " +
         "background-position: center; " +
